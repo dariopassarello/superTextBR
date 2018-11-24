@@ -1,6 +1,6 @@
 package battleRoyale;
 
-public class Armour 
+public class Armour implements Lootable
 {
 	//NAME
 	private String name;
@@ -22,7 +22,7 @@ public class Armour
 		int trueDamage, armourDamage;
 		if(this.HP > 0)
 		{
-			armourDamage = (int) Math.ceil(attackDamage*damageProtection);
+			armourDamage = (int) Math.ceil(attackDamage*(1 - damageProtection));
 			trueDamage = attackDamage - armourDamage;
 			if(armourDamage < this.HP)
 			{
@@ -43,5 +43,15 @@ public class Armour
 		}
 	}
 	
+	public Armour getNewArmour()
+	{
+		return new Armour(this.name, this.damageProtection, this.maxHealth);
+	}
+
+	public int getMetric() 
+	{
+		return (int) ((this.damageProtection*this.maxHealth));
+	}
 	
+
 }

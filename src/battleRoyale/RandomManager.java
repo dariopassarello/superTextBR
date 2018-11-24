@@ -2,6 +2,7 @@ package battleRoyale;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class RandomManager 
@@ -88,7 +89,9 @@ public class RandomManager
 	
 	public static int[] randomPermutation(int toPermutate[])
 	{
-		
+		ArrayList<Integer> list = RandomManager.toArrayList(toPermutate);
+		Collections.shuffle(list);
+		return toIntArray(list);
 	}
 	
 	public static ArrayList<Integer> toArrayList(int toConvert[],boolean condition)

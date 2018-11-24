@@ -5,8 +5,21 @@ public class Narrator
 	public static void narratePreFight(Player p1,Player p2,Location loc)
 	{
 		System.out.printf("\n%s attacca %s %s %s\n",p1.getName().toUpperCase(),p2.getName().toUpperCase(),loc.getPreposition(),loc.getName());
-		pressAnyKeyToContinue();
 	}
+	
+	public static void narratePoison(Player player)
+	{
+		
+		if(player.getHP() > 0)
+		{
+			System.out.printf("\n%s (HP %d) � stato danneggiato dal veleno (DANNO: %d HP)", player.getName(), player.getHP(), player.getPoisonAmount());
+		}
+		else
+		{
+			System.out.printf("\n%s � stato ucciso dal veleno (DANNO: %d HP)", player.getName(), player.getPoisonAmount());
+		}
+	}
+	
 	public static void narrateFight(FightResult res)
 	{
 		

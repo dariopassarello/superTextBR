@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 
-public class Weapon 
+public class Weapon implements Lootable
 {
 	protected ArrayList<Integer> weaponAttributes;
 	protected int level;
@@ -64,6 +64,14 @@ public class Weapon
 		this.level = level;
 		this.baseWeapon = baseWeapon;
 	}
+	/**
+	 * 
+	 * @param prefix The article for the weapon when is printed to screen
+	 * @param name The name of the weapon
+	 * @param types The attributes for the weapon
+	 * @param level The level of the weapon
+	 * @param baseWeapon The "father weapon"
+	 */
 	public Weapon(String prefix, String name,int types[],int level,Weapon baseWeapon)
 	{
 		this.prefix = prefix;
@@ -288,6 +296,12 @@ public class Weapon
 			worst = weap2;
 		}
 		return worst;
+	}
+	@Override
+	
+	public int getMetric() 
+	{
+		return this.level;
 	}
 	
 	

@@ -4,7 +4,7 @@ public class Player
 	//NAME
 	private String name;
 	//EQUIPMENT
-	private daryx77.superTextBattleRoyale.mainPackage.Weapon primaryWeapon;
+	private Weapon primaryWeapon; 
 	private Weapon secondaryWeapon;
 	private Armour armour;
 	//STATUS

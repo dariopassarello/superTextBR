@@ -134,13 +134,12 @@ public class ReadFromFile
 					{
 						System.out.printf("%s-",split[i]);
 					}
-					
+					/**
 					System.out.printf("\n");
 					if(split[4].contains("null"))
 					{
 						System.out.println("OK");
-						weapons.add(new Weapon(split[0], split[1], Integer.parseInt(split[3].replaceAll("\\s+","")) == 1 ? true : false, 
-								Integer.parseInt(split[2].replaceAll("\\s+","")), null));
+						weapons.add(new Weapon(st, st, null, 0, null));
 					}
 					else
 					{
@@ -161,7 +160,7 @@ public class ReadFromFile
 							System.out.printf("\n ERRORE: PADRE NON TROVATO PER %s\n",split[1]);
 							weapons.add(new Weapon(split[0], split[1], Integer.parseInt(split[3].replaceAll("\\s+","")) == 1 ? true : false, Integer.parseInt(split[2].replaceAll("\\s+","")), null));
 						}
-					}
+					}*/
 				}
 			}
 		}

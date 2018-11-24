@@ -7,28 +7,80 @@ public class GameFlow
 	private CopyOnWriteArrayList<Weapon> weapons;
 	private CopyOnWriteArrayList<Player> players;
 	private CopyOnWriteArrayList<Location> locations;
+	private CopyOnWriteArrayList<Player> watchlist;
 	private int playersInGame;
 	private int maxSpawnLevel;
-	
+	private int gamemode;
+	private int tick;
 	private static final int FIGHT_CHANCE = 80;
 	private static final int OBJECT_CHANCE = 80;
-	private static final int FIND_OBJECT_RATE = 10;
-	private static final int UPGRADE_WEAPON_RATE = 20;
+	private static final int FIND_OBJECT_RATE = 7;
+	private static final int UPGRADE_WEAPON_RATE = 18;
 	private static final int MAX_LEVEL = 5;
 	private static final int[] WEAPON_LEVELS = {100,90,75,55,35,20};
+	private static final int[] NUMBER_OF_FIGHTERS_ODDS = {32,48,56,60,62};
+	public static final int MODE_BATTLE_ROYALE = 0;
 	
-	public GameFlow(CopyOnWriteArrayList<Weapon> weapons, CopyOnWriteArrayList<Player> players, CopyOnWriteArrayList<Location> locations)
+	public GameFlow(int gameMode, CopyOnWriteArrayList<Weapon> weapons, CopyOnWriteArrayList<Player> players, CopyOnWriteArrayList<Location> locations)
 	{
 		this.weapons = weapons;
 		this.players = players;
 		this.locations = locations;
 		this.maxSpawnLevel = 1;
 		this.playersInGame = 50;
+		this.gamemode = gameMode;
 		Weapon.weaponList = this.weapons;
+		this.tick = 0;
 	}
 	
+	
+	
 
-	private void findOrUpgradeWeapon()
+	private void battleRoyale()
+	{
+		while(this.playersInGame > 1)
+		{
+			//LOOT
+			if(this.maxSpawnLevel > 0)
+			{
+				//TODO
+			}
+			//BATTLE
+			int numberOfFighters = RandomManager.multiRange(0, 64, GameFlow.NUMBER_OF_FIGHTERS_ODDS) + 2;
+			numberOfFighters = Math.max(this.playersInGame, numberOfFighters);
+			int playerNumbers[] = null;
+			Player playersArray[] = null;
+			for(int i = 0; i < numberOfFighters; i++)
+			{
+				playerNumbers[i] = RandomManager.randomRangeExcluded(0, this.playersInGame, playerNumbers);
+				playersArray[i] = this.players.get(playerNumbers[i]);
+			}
+			Location location = locations.get(RandomManager.randomRange(0, locations.size()));
+			Fight fight = new Fight(location,playersArray);
+			FightResult res;
+			do
+			{
+				res = fight.nextHit();
+				Narrator.narrateFight(res);
+			}
+			while(res.playersRemaingInFight > 1);
+			for(Player player : this.players)
+			{
+				player.updateHP();
+				if(player.getPoisonAmount() > 0)
+				{
+					Narrator.narratePoison(player);
+				}
+				if(player.getHP() <= 0)
+				{
+					this.killPlayer(player);
+				}
+					
+			}
+		}
+	}
+	@Deprecated
+	private boolean findOrUpgradeWeapon()
 	{
 		Random rand = new Random();
 		if(this.maxSpawnLevel > 0)
@@ -90,7 +142,7 @@ public class GameFlow
 			}
 		}
 	}
-	
+	@Deprecated
 	private FightResult startFight(int minSleep,int maxSleep)
 	{
 		Random rand = new Random();
@@ -130,6 +182,14 @@ public class GameFlow
 			return null;
 		}
 		
+	}
+	
+	private void killPlayer(Player player)
+	{
+		Player temp = this.players.get(this.playersInGame - 1);
+		this.players.set(this.playersInGame - 1, player);
+		this.players.set(this.players.indexOf(player), temp);
+		this.playersInGame--;
 	}
 	
 	private void randomSleep(int minSleep,int maxSleep)
