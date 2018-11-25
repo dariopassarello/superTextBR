@@ -50,8 +50,41 @@ public class Armour implements Lootable
 
 	public int getMetric() 
 	{
-		return (int) ((this.damageProtection*this.maxHealth));
+		return (int) ((this.damageProtection*this.HP));
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public float getDamageProtection() {
+		return damageProtection;
+	}
+
+	public void setDamageProtection(float damageProtection) {
+		this.damageProtection = damageProtection;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+
+	public int getHP() {
+		return HP;
+	}
+
+	public void setHP(int hP) {
+		HP = hP;
+	}
+	
 	
 
 }

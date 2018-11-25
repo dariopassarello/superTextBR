@@ -1,23 +1,81 @@
 package battleRoyale;
 
-public class Narrator 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public final class Narrator 
 {
-	public static void narratePreFight(Player p1,Player p2,Location loc)
+	public static CopyOnWriteArrayList<Player> watchlist;
+	public static int minPriority;
+	private static SimpleDateFormat sdf = new SimpleDateFormat();
+	
+	public static void sayDayHour(int day, int hour) 
 	{
-		System.out.printf("\n%s attacca %s %s %s\n",p1.getName().toUpperCase(),p2.getName().toUpperCase(),loc.getPreposition(),loc.getName());
+		System.out.printf("\nGIORNO: %d,ORE %d:00\n",day,hour);
 	}
 	
-	public static void narratePoison(Player player)
+	public static void narratePlayersRemaing(int players)
 	{
-		
-		if(player.getHP() > 0)
-		{
-			System.out.printf("\n%s (HP %d) � stato danneggiato dal veleno (DANNO: %d HP)", player.getName(), player.getHP(), player.getPoisonAmount());
+		System.out.printf("\nGIOCATORI RIMANENTI: %d",players);
+	}
+	
+	public static void narratePreFight(Player[] players,Location loc)
+	{
+		for(Player p : players)
+		{	
+			if(p.getArmour() != null)
+			{
+				System.out.printf("\n %s (HP: %d ,ARMOUR: %s)",p.getName(),p.getHP(),p.getArmour().getName());
+			}
+			else
+			{
+				System.out.printf("\n %s (HP: %d)",p.getName(),p.getHP());
+			}
 		}
-		else
+		System.out.printf("\niniziano a combattere %s %s! BUONA FORTUNA!",loc.getPreposition(),loc.getName());
+	}
+	
+	public static void narratePostFight()
+	{
+		System.out.printf("\n");
+	}
+	
+	
+	public static void narrateHealing(Player player, Potion potion, int HPprec)
+	{
+		System.out.printf("\n%s (%d HP) ha usato %s, recuperando %d HP",player.getName(),player.getHP(),potion.getName(),player.getHP() - HPprec);
+	}
+	
+	public static void narratePoison(CopyOnWriteArrayList<Player> players)
+	{
+		boolean damageFromPoison = false;
+
+		System.out.printf("\n DANNI DA VELENO: ");
+		for(Player player : players)
 		{
-			System.out.printf("\n%s � stato ucciso dal veleno (DANNO: %d HP)", player.getName(), player.getPoisonAmount());
+			
+			if(player.getPoisonAmount() > 0)
+			{
+				System.out.printf("\n%s (HP %d, DANNO: %d HP)", player.getName().toUpperCase()
+						, player.getHP() - player.getPoisonAmount()> 0 ? player.getHP() - player.getPoisonAmount() : 0
+						, player.getPoisonAmount());
+				damageFromPoison = true;
+			}
+			
 		}
+		if(damageFromPoison == false)
+		{
+			System.out.printf("(nessuno)");
+		}
+		for(Player player : players)
+		{
+			if(player.getPoisonAmount() > 0 && player.getHP() == 0)
+			{
+				System.out.printf("\n%s è morto di avvelenamento(DANNO: %d HP)", player.getName().toUpperCase(),player.getPoisonAmount());
+			}
+		}
+
 	}
 	
 	public static void narrateFight(FightResult res)
@@ -25,28 +83,28 @@ public class Narrator
 		
 		if(res.fightStatus == Fight.STATUS_ESCAPE)
 		{
-			System.out.printf("\n%s � fuggito da %s, gli rimangono %d HP\n\n",res.playerHitter.getName(),res.playerToHit.getName(),res.playerHitter.getHP());
+			System.out.printf("\n%s e' fuggito, gli rimangono %d HP",res.playerHitter.getName(),res.playerHitter.getHP());
 		}
 		else if(res.fightStatus == Fight.STATUS_STILL_FIGHTING)
 		{
 			if(res.damageStats.typeOfDamage == HitStats.DAMAGE_CRITICAL_HIT)
 			{
-				System.out.printf("\n%s (%d HP) ha colpito MOLTO FORTE %s (%d HP) %s%s, (Danno: %d HP)\n",res.playerHitter.getName(),res.playerHitter.getHP(),
+				System.out.printf("\n%s (%d HP) ha colpito MOLTO FORTE %s (%d HP) %s %s, (Danno: %d HP)\n",res.playerHitter.getName(),res.playerHitter.getHP(),
 						res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName(),res.damageStats.damageDealt);
 			}
 			else if(res.damageStats.typeOfDamage == HitStats.DAMAGE_FULL_HIT)
 			{
-				System.out.printf("\n%s (%d HP) ha colpito %s (%d HP) %s%s, (Danno: %d HP)",res.playerHitter.getName(),res.playerHitter.getHP(),
+				System.out.printf("\n%s (%d HP) ha colpito %s (%d HP) %s %s, (Danno: %d HP)",res.playerHitter.getName(),res.playerHitter.getHP(),
 						res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName(),res.damageStats.damageDealt);
 			}
 			else if(res.damageStats.typeOfDamage == HitStats.DAMAGE_PARTIAL_HIT)
 			{
-				System.out.printf("\n%s (%d HP) ha colpito di striscio %s (%d HP) %s%s, (Danno: %d HP)",res.playerHitter.getName(),res.playerHitter.getHP(),
+				System.out.printf("\n%s (%d HP) ha colpito di striscio %s (%d HP) %s %s, (Danno: %d HP)",res.playerHitter.getName(),res.playerHitter.getHP(),
 						res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName(),res.damageStats.damageDealt);
 			}
 			else
 			{
-				System.out.printf("\n%s (%d HP) ha provato a colpire %s (%d HP) %s%s",res.playerHitter.getName(),res.playerHitter.getHP(),
+				System.out.printf("\n%s (%d HP) ha provato a colpire %s (%d HP) %s %s",res.playerHitter.getName(),res.playerHitter.getHP(),
 						res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName());
 			}
 
@@ -54,10 +112,9 @@ public class Narrator
 		}
 		else
 		{
-			System.out.printf("\n%s (%d HP) ha ucciso %s (%d HP) %s%s, %s %s (Danno: %d HP)",res.playerHitter.getName(),res.playerHitter.getHP(),
+			System.out.printf("\n%s (%d HP) ha ucciso %s (%d HP) %s %s, %s %s (Danno: %d HP)",res.playerHitter.getName(),res.playerHitter.getHP(),
 					res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName(),res.location.getPreposition(),res.location.getName(),res.damageStats.damageDealt);
 		}
-		pressAnyKeyToContinue();
 	}
 	
 	public static void narrateUpgradeWeapon(Player player,Weapon weaponOld, Weapon weaponNew)
@@ -66,7 +123,14 @@ public class Narrator
 				weaponNew.getLevel());
 		System.out.printf("ARMI: [%s(%d) |%s(%d) ]\n",player.getPrimaryWeapon().getName(),player.getPrimaryWeapon().getLevel(),
 				player.getSecondaryWeapon().getName(),player.getSecondaryWeapon().getLevel());
-		pressAnyKeyToContinue();
+	}
+	public static void narrateEquipArmour(Player player,Armour armour)
+	{
+		System.out.printf("\n%s ha equipaggiato \"%s \" (HEALTH:%d) , \n",player.getName().toUpperCase(),armour.getName().toUpperCase(),armour.getMaxHealth());
+	}
+	public static void narrateEquipPotion(Player player,Potion potion)
+	{
+		System.out.printf("\n%s ha raccolto \"%s \" (HEAL:%d/%d) , \n",player.getName().toUpperCase(),potion.getName(),potion.getHealing(),potion.getHealthCap());
 	}
 	public static void narrateFindWeapon(Player player,Weapon weapon)
 	{
@@ -74,19 +138,6 @@ public class Narrator
 				player.getSecondaryWeapon().getName());
 		System.out.printf("ARMI: [%s (%d) |%s (%d) ]\n",player.getPrimaryWeapon().getName(),player.getPrimaryWeapon().getLevel(),
 				player.getSecondaryWeapon().getName(),player.getSecondaryWeapon().getLevel());
-		pressAnyKeyToContinue();
 	}
-	 private static
-	 void pressAnyKeyToContinue()
-	 { 
-	        //
-		 
-		 //System.out.println("Press Enter key to continue...");
-	        try
-	        {
-	            System.in.read();
-	        }  
-	        catch(Exception e)
-	        {}  
-	 }
+
 }

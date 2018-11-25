@@ -77,10 +77,14 @@ public class Weapon implements Lootable
 		this.prefix = prefix;
 		this.name = name;
 		this.weaponAttributes = new ArrayList<Integer>(); 
-		for(int attribute : types)
+		if(types != null)
 		{
-			if(!this.weaponAttributes.contains(attribute)) weaponAttributes.add(attribute);
+			for(int attribute : types)
+			{
+				if(!this.weaponAttributes.contains(attribute)) weaponAttributes.add(attribute);
+			}
 		}
+
 		this.hitRate = HIT_RATE_LEVEL[this.level];
 		this.maxDamage = DAMAGE_LEVEL[this.level];
 		this.level = level;
@@ -242,6 +246,7 @@ public class Weapon implements Lootable
 		for(int i = 0; i < Weapon.weaponList.size(); i++)
 		{
 			candidate = Weapon.weaponList.get(i);
+			//System.out.printf("\nthis:%s, this father: %s,candidate: %s, candidate father: %s",this.getName(),this.getBaseWeapon()!= null ? this.getBaseWeapon().getName() : "null",candidate.getName(),candidate.getBaseWeapon()!= null ? candidate.getBaseWeapon().getName() : "null");
 			if(candidate.baseWeapon != null && (candidate.baseWeapon == this ||  candidate.baseWeapon == this.baseWeapon) && candidate.level == this.level + 1)
 			{
 				return candidate;

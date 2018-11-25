@@ -3,7 +3,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ReadFromFile 
@@ -26,10 +27,15 @@ public class ReadFromFile
 		}
 		try
 		{
+			while(players == null)
+			{
+				System.out.print("locked");
+			}
 			String st;
 			while((st = reader.readLine())!= null)
 			{
-				players.add(new Player(st));
+				Player p = new Player(st);
+				players.add(p);
 			}
 		}
 		catch (Exception e)
@@ -56,6 +62,7 @@ public class ReadFromFile
 		}
 		return players;
 	}
+	
 	public static CopyOnWriteArrayList<Location> readLocations(String path)
 	{
 		BufferedReader reader;
@@ -77,7 +84,7 @@ public class ReadFromFile
 			String split[];
 			while((st = reader.readLine())!= null)
 			{
-				split = st.split(";");
+				split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
 				locations.add(new Location(split[0],split[1]));
 				
 			}
@@ -106,10 +113,25 @@ public class ReadFromFile
 		}
 		return locations;
 	}
+	
+	private static Weapon findFather(CopyOnWriteArrayList<Weapon> e, String name,String st)
+	{
+		if(name.equals("null")) return null;
+		for(Weapon w : e)
+		{
+			if(name.equals(w.getName()))
+			{
+				return w;
+			}
+		}
+		System.out.printf("ERRORE DI PADRINCONIA \"%s\" -> \"%s\"\n",name,st);
+		throw new NullPointerException();
+	}
 	public static CopyOnWriteArrayList<Weapon> readWeapons(String path)
 	{
+
 		BufferedReader reader;
-		CopyOnWriteArrayList<Weapon> weapons = new CopyOnWriteArrayList<Weapon>();
+		CopyOnWriteArrayList<Weapon> lootable = new CopyOnWriteArrayList<Weapon>();
 		try
 		{
 			File file = new File(path);
@@ -129,38 +151,18 @@ public class ReadFromFile
 			{
 				if(st.charAt(0) != '#')
 				{
-					split = st.split(";");
-					for(int i = 0; i < split.length; i++)
+					//Regex: [ \\t\\n\\x0b\\r\\f]*;[ \\t\\n\\x0b\\r\\f]*
+					split = st.split(";[ \\t\\n\\x0b\\r\\f]*");
+					
+					String[] propertiesStr = split[3].split(",");
+					ArrayList<Integer> properties = new ArrayList<Integer>();
+					for(int i = 0; i < propertiesStr.length; i++)
 					{
-						System.out.printf("%s-",split[i]);
+						properties.add(Integer.parseInt(propertiesStr[i]));
 					}
-					/**
-					System.out.printf("\n");
-					if(split[4].contains("null"))
-					{
-						System.out.println("OK");
-						weapons.add(new Weapon(st, st, null, 0, null));
-					}
-					else
-					{
-						Weapon father;
-						boolean found = false;
-						for(int i = 0; i < weapons.size(); i++)
-						{
-							if(split[4].contains(weapons.get(i).getName()))
-							{
-								weapons.add(new Weapon(split[0], split[1], Integer.parseInt(split[3].replaceAll("\\s+","")) == 1 ? true : false, Integer.parseInt(split[2].replaceAll("\\s+","")), weapons.get(i)));
-								System.out.println("\nPADRE TROVATO\n");
-								found = true;
-								break;
-							}
-						}
-						if(found == false)
-						{
-							System.out.printf("\n ERRORE: PADRE NON TROVATO PER %s\n",split[1]);
-							weapons.add(new Weapon(split[0], split[1], Integer.parseInt(split[3].replaceAll("\\s+","")) == 1 ? true : false, Integer.parseInt(split[2].replaceAll("\\s+","")), null));
-						}
-					}*/
+					lootable.add(new Weapon(split[0], split[1]
+							, Arrays.stream(properties.toArray(new Integer[properties.size()])).mapToInt(Integer::intValue).toArray() 
+							,Integer.parseInt(split[2]), findFather(lootable,split[4],st)));
 				}
 			}
 		}
@@ -186,7 +188,109 @@ public class ReadFromFile
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return weapons;
+		return lootable;
 	}
+	
+	public static CopyOnWriteArrayList<Armour> readArmours(String path)
+	{
+		BufferedReader reader;
+		CopyOnWriteArrayList<Armour> armours = new CopyOnWriteArrayList<Armour>();
+		try
+		{
+			File file = new File(path);
+			reader = new BufferedReader(new FileReader(file));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			
+			return null;
+		}
+		try
+		{
+			String st;
+			String split[];
+			while((st = reader.readLine())!= null)
+			{
+				split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
+				armours.add(new Armour(split[0], Float.parseFloat(split[1]), Integer.parseInt(split[2])));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			try 
+			{
+				reader.close();
+			} 
+			catch (IOException e1) 
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return null;
+		}
+		try 
+		{
+			reader.close();
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return armours;
+	}
+	
+	public static CopyOnWriteArrayList<Potion> readPotions(String path)
+	{
+		BufferedReader reader;
+		CopyOnWriteArrayList<Potion> potions = new CopyOnWriteArrayList<Potion>();
+		try
+		{
+			File file = new File(path);
+			reader = new BufferedReader(new FileReader(file));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			
+			return null;
+		}
+		try
+		{
+			String st;
+			String split[];
+			while((st = reader.readLine())!= null)
+			{
+				split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
+				potions.add(new Potion(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2])));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			try 
+			{
+				reader.close();
+			} 
+			catch (IOException e1) 
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return null;
+		}
+		try 
+		{
+			reader.close();
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return potions;
+	}
+	
+
 	
 }

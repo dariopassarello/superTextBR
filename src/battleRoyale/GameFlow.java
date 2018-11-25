@@ -1,31 +1,47 @@
 package battleRoyale;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameFlow 
 {
-	private CopyOnWriteArrayList<Weapon> weapons;
+	private CopyOnWriteArrayList<Player> allPlayers = new CopyOnWriteArrayList<Player>();
+	private CopyOnWriteArrayList<Player> deadPlayers  = new CopyOnWriteArrayList<Player>();
 	private CopyOnWriteArrayList<Player> players;
 	private CopyOnWriteArrayList<Location> locations;
+	private CopyOnWriteArrayList<Weapon> weapons;
+	private CopyOnWriteArrayList<Armour> armours;
+	private CopyOnWriteArrayList<Potion> potions;
 	private CopyOnWriteArrayList<Player> watchlist;
+
 	private int playersInGame;
 	private int maxSpawnLevel;
 	private int gamemode;
 	private int tick;
-	private static final int FIGHT_CHANCE = 80;
-	private static final int OBJECT_CHANCE = 80;
-	private static final int FIND_OBJECT_RATE = 7;
-	private static final int UPGRADE_WEAPON_RATE = 18;
-	private static final int MAX_LEVEL = 5;
-	private static final int[] WEAPON_LEVELS = {100,90,75,55,35,20};
+
+	private static final int FIGHT_PROBABILITY = 80;
+	private static final int FIND_OBJECT_RATE_MAX = 40;
+	private static final int FIND_OBJECT_RATE_MIN = 3;
+	private static final int UPGRADE_WEAPON_RATE = 20;
+	private static final int[] WEAPON_TICKS = {5,35,60,90,120};
 	private static final int[] NUMBER_OF_FIGHTERS_ODDS = {32,48,56,60,62};
+												//0 - 50 Weapon, 51-80 Armour, 80-99 Potion
+	private static final int[] TYPE_OF_LOOT_ODDS = {50,80};
 	public static final int MODE_BATTLE_ROYALE = 0;
 	
-	public GameFlow(int gameMode, CopyOnWriteArrayList<Weapon> weapons, CopyOnWriteArrayList<Player> players, CopyOnWriteArrayList<Location> locations)
+	public GameFlow(int gameMode, CopyOnWriteArrayList<Player> players, 
+			CopyOnWriteArrayList<Location> locations, CopyOnWriteArrayList<Lootable> lootables)
 	{
-		this.weapons = weapons;
+		
 		this.players = players;
+		this.allPlayers.addAll(players);
+		
 		this.locations = locations;
+		this.weapons = Lootable.getWeapons(lootables);
+		this.potions = Lootable.getPotions(lootables);
+		this.armours = Lootable.getArmours(lootables);
 		this.maxSpawnLevel = 1;
 		this.playersInGame = 50;
 		this.gamemode = gameMode;
@@ -34,162 +50,201 @@ public class GameFlow
 	}
 	
 	
-	
-
-	private void battleRoyale()
+	public void startGame()
 	{
-		while(this.playersInGame > 1)
+		battleRoyale();
+	}
+
+	private void battleRoyale()               
+	{
+		while(this.getAlivePlayers() > 1)
 		{
+			
+			
+			promptEnterKey();
+			Narrator.sayDayHour(day(this.tick), hour(this.tick));
+			this.maxSpawnLevel = RandomManager.multiRange(this.tick, GameFlow.WEAPON_TICKS);
 			//LOOT
-			if(this.maxSpawnLevel > 0)
-			{
-				//TODO
-			}
+			this.tryPlayersLooting();
 			//BATTLE
-			int numberOfFighters = RandomManager.multiRange(0, 64, GameFlow.NUMBER_OF_FIGHTERS_ODDS) + 2;
-			numberOfFighters = Math.max(this.playersInGame, numberOfFighters);
-			int playerNumbers[] = null;
-			Player playersArray[] = null;
-			for(int i = 0; i < numberOfFighters; i++)
+			//Skip battle
+			if(!RandomManager.isInRandomRange(0, 100, GameFlow.FIGHT_PROBABILITY, 100))
 			{
-				playerNumbers[i] = RandomManager.randomRangeExcluded(0, this.playersInGame, playerNumbers);
-				playersArray[i] = this.players.get(playerNumbers[i]);
+				int numberOfFighters = RandomManager.multiRandomRange(0, 64, GameFlow.NUMBER_OF_FIGHTERS_ODDS) + 2;
+				numberOfFighters = Math.min(this.getAlivePlayers(), numberOfFighters);
+				CopyOnWriteArrayList<Integer> playerNumbers = new CopyOnWriteArrayList<Integer>();
+				CopyOnWriteArrayList<Player> playersArrayList = new CopyOnWriteArrayList<Player>();
+				Player playersArray[];
+
+				for(int i = 0; i < numberOfFighters; i++)
+				{
+					playerNumbers.add(RandomManager.randomRangeExcluded(0, this.getAlivePlayers(), playerNumbers.toArray(new Integer[playerNumbers.size()])));
+					playersArrayList.add(this.players.get(playerNumbers.get(i)));
+				}
+
+				playersArray = playersArrayList.toArray(new Player[playersArrayList.size()]);
+				Location location = locations.get(RandomManager.randomRange(0, locations.size()));
+				Narrator.narratePreFight(playersArray, location);
+				Fight fight = new Fight(location,playersArray);
+				FightResult res;
+				do
+				{
+					res = fight.nextHit();
+					if(res.fightStatus == Fight.STATUS_KILL || res.fightStatus == Fight.STATUS_STEALTH_KILL)
+					{
+						this.killPlayer(res.playerToHit);
+					}
+					Narrator.narrateFight(res);
+				}
+				while(res.playersRemaingInFight > 1);
+				Narrator.narratePostFight();
 			}
-			Location location = locations.get(RandomManager.randomRange(0, locations.size()));
-			Fight fight = new Fight(location,playersArray);
-			FightResult res;
-			do
-			{
-				res = fight.nextHit();
-				Narrator.narrateFight(res);
-			}
-			while(res.playersRemaingInFight > 1);
+			Narrator.narratePoison(players);
+
 			for(Player player : this.players)
 			{
-				player.updateHP();
-				if(player.getPoisonAmount() > 0)
-				{
-					Narrator.narratePoison(player);
-				}
+				player.updateHP();				
 				if(player.getHP() <= 0)
 				{
 					this.killPlayer(player);
 				}
-					
 			}
+			this.tick++;
 		}
 	}
-	@Deprecated
-	private boolean findOrUpgradeWeapon()
+	
+	private void tryPlayersLooting()
 	{
-		Random rand = new Random();
 		if(this.maxSpawnLevel > 0)
 		{
-			for(int i = 0; i < this.playersInGame; i++)
+			for(Player player : players)
 			{
-
-				Player player = players.get(i);
-				if(player.getPrimaryWeapon().isUpgradable() || player.getSecondaryWeapon().isUpgradable())
+				int numberOfUpgradable = 0;
+				if(player.getPrimaryWeapon().isUpgradable())
 				{
-					int upgrade = rand.nextInt(100);
-					if(upgrade < GameFlow.UPGRADE_WEAPON_RATE)
+					numberOfUpgradable += 2;
+
+				}
+				if(player.getSecondaryWeapon().isUpgradable())
+				{
+					numberOfUpgradable += 1;
+
+				}
+				if(numberOfUpgradable > 0 && RandomManager.isInRandomRange(0, 100, 0, GameFlow.UPGRADE_WEAPON_RATE))
+				{
+					
+					if(numberOfUpgradable == 3) numberOfUpgradable = RandomManager.randomRange(1, 2);
+					if(numberOfUpgradable == 2)
 					{
-						if(player.getPrimaryWeapon().isUpgradable())
-						{
-							Weapon newWeapon = player.getPrimaryWeapon().getLevelUpWeapon();
-							Narrator.narrateUpgradeWeapon(player, player.getPrimaryWeapon(), newWeapon);
-							player.setPrimaryWeapon(player.getPrimaryWeapon().getLevelUpWeapon());
-						}
-						else
-						{
-							Weapon newWeapon = player.getSecondaryWeapon().getLevelUpWeapon();
-							Narrator.narrateUpgradeWeapon(player, player.getSecondaryWeapon(), newWeapon);
-							player.setSecondaryWeapon(player.getSecondaryWeapon().getLevelUpWeapon());
-						}
+						Narrator.narrateUpgradeWeapon(player, player.getPrimaryWeapon(), player.getPrimaryWeapon().getLevelUpWeapon());
+						player.setPrimaryWeapon(player.getPrimaryWeapon().getLevelUpWeapon());
+					}
+					else
+					{
+						Narrator.narrateUpgradeWeapon(player, player.getSecondaryWeapon(), player.getSecondaryWeapon().getLevelUpWeapon());
+						player.setSecondaryWeapon(player.getSecondaryWeapon().getLevelUpWeapon());
 					}
 				}
-				int objectFind = rand.nextInt(100);
-				if(objectFind < GameFlow.FIND_OBJECT_RATE)
+				else
 				{
-					int typeObject = rand.nextInt(4);
-					if(typeObject < 4) //Trova un arma
+					
+					if(RandomManager.isInRandomRange(0, 100, 0, this.getFindWeaponChance()))
 					{
-						Weapon weapon = Weapon.randomWeapon(1,this.maxSpawnLevel,true);
-						if(weapon.getTier() >= player.getMaxWeaponTier())
+						Lootable itemFound = null;
+						switch(RandomManager.multiRandomRange(0, 100, GameFlow.TYPE_OF_LOOT_ODDS))
 						{
-							Weapon toChange = Weapon.worstWeapon(player.getPrimaryWeapon(), player.getSecondaryWeapon());
-							Weapon toKeep = Weapon.bestWeapon(toChange,weapon);
-							if(toChange == player.getPrimaryWeapon())
+							case 0: itemFound = Weapon.randomWeapon(1, this.maxSpawnLevel, false);
+									break;
+							case 1: itemFound = this.armours.get(RandomManager.randomRange(0, this.armours.size()));
+									break;
+							case 2: itemFound = this.potions.get(RandomManager.randomRange(0, this.potions.size()));
+								break;
+								
+						}
+						if(itemFound instanceof Weapon)
+						{
+							Weapon weaponFound = (Weapon) itemFound;
+							if(Weapon.worstWeapon(player.getPrimaryWeapon(), player.getSecondaryWeapon()) == player.getPrimaryWeapon())
 							{
-								if(toKeep != player.getPrimaryWeapon())
+								if(Weapon.bestWeapon(player.getPrimaryWeapon(), weaponFound) == weaponFound)
 								{
-									player.setPrimaryWeapon(toKeep);
-									Narrator.narrateFindWeapon(player, toKeep);
+									
+									player.setPrimaryWeapon(weaponFound);
+									Narrator.narrateFindWeapon(player, weaponFound);
 								}
 							}
 							else
 							{
-								if(toKeep != player.getSecondaryWeapon())
+								if(Weapon.bestWeapon(player.getSecondaryWeapon(), weaponFound) == weaponFound)
 								{
-									player.setSecondaryWeapon(toKeep);
-									Narrator.narrateFindWeapon(player, toKeep);
+									
+									player.setSecondaryWeapon(weaponFound);
+									Narrator.narrateFindWeapon(player, weaponFound);
 								}
 							}
 						}
+						boolean ok = false;
+						if(itemFound instanceof Armour)
+						{
+							
+							if(player.getArmour() == null) ok = true;
+							if( ok == false && player.getArmour().getMetric() < itemFound.getMetric() ) ok = true;
+							if(ok)
+							{
+								player.setArmour(((Armour) itemFound).getNewArmour());
+								Narrator.narrateEquipArmour(player, (Armour) itemFound);
+							}
+						}
+						if(itemFound instanceof Potion)
+						{
+							if(player.getPotion() == null) ok = true;
+							if(ok == false && player.getPotion().getMetric() < itemFound.getMetric()) ok = true;
+							if(ok)
+							{
+								player.setPotion((Potion) itemFound);
+								Narrator.narrateEquipPotion(player, (Potion) itemFound);
+							}
+						}
 					}
-					//TODO altri oggetti
 				}
 			}
 		}
 	}
-	@Deprecated
-	private FightResult startFight(int minSleep,int maxSleep)
+	
+	private int day(int tick)
 	{
-		Random rand = new Random();
-		if(playersInGame > 1)
-		{
-			int num1, num2, numLuogo;
-			do
-			{
-				num1 = rand.nextInt(playersInGame);
-				num2 = rand.nextInt(playersInGame);
-			}
-			while(num1 == num2);
-			numLuogo = rand.nextInt(locations.size());
-			Fight fight = new Fight(locations.get(numLuogo), players.get(num1), players.get(num2));
-			Narrator.narratePreFight(players.get(num1), players.get(num2), locations.get(numLuogo));
-			FightResult res;
-			do
-			{
-				res = fight.nextHit();
-				Narrator.narrateFight(res);
-			}
-			while(res.fightStatus == Fight.STATUS_STILL_FIGHTING);
-			if(res.fightStatus == Fight.STATUS_KILL || res.fightStatus == Fight.STATUS_STEALTH_KILL)
-			{
-				Player temp;
-				int killed = players.indexOf(res.playerToHit);
-				temp = this.players.get(playersInGame - 1);
-				this.players.set(playersInGame - 1, players.get(killed));
-				this.players.set(killed, temp);
-				playersInGame--;
-				System.out.printf("\nGIOCATORI RIMANTENTI: %d\n\n", playersInGame);
-			}
-			return res;
-		}
-		else
-		{
-			return null;
-		}
-		
+		return (tick + 12)/24 + 1;
+	}
+	private int hour(int tick)
+	{
+		return (tick + 12)%24;
 	}
 	
 	private void killPlayer(Player player)
 	{
-		Player temp = this.players.get(this.playersInGame - 1);
-		this.players.set(this.playersInGame - 1, player);
-		this.players.set(this.players.indexOf(player), temp);
-		this.playersInGame--;
+		this.players.remove(player);
+		this.deadPlayers.add(player);
+		Narrator.narratePlayersRemaing(this.getAlivePlayers());
+	}
+	
+	private int getAlivePlayers()
+	{
+		int alive = 0;
+		for(Player player : this.players)
+		{
+			if(player.isAlive())
+			{
+				alive++;
+			}
+		}
+		return alive;
+	}
+	
+	private int getFindWeaponChance()
+	{
+		float k = (float) this.getAlivePlayers()/this.allPlayers.size();
+		//System.out.println(((1 - k)*GameFlow.FIND_OBJECT_RATE_MAX + k*GameFlow.FIND_OBJECT_RATE_MIN));
+		return (int) ((1 - k)*GameFlow.FIND_OBJECT_RATE_MAX + k*GameFlow.FIND_OBJECT_RATE_MIN);
 	}
 	
 	private void randomSleep(int minSleep,int maxSleep)
@@ -213,16 +268,17 @@ public class GameFlow
 			e.printStackTrace();
 		}
 	}
-	 private void pressAnyKeyToContinue()
-	 { 
-	        //
-		 
-		 //System.out.println("Press Enter key to continue...");
-	        try
-	        {
-	            System.in.read();
-	        }  
-	        catch(Exception e)
-	        {}  
-	 }
+	
+
+	public void promptEnterKey()
+	{
+
+		 System.out.println("Press \"ENTER\" to continue...");
+		        try {
+		            int read = System.in.read(new byte[2]);
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+	}
+
 }

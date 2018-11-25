@@ -7,6 +7,7 @@ public class Player
 	private Weapon primaryWeapon; 
 	private Weapon secondaryWeapon;
 	private Armour armour;
+	private Potion potion;
 	//STATUS
 	private int HP;
 	private int poisonAmount;
@@ -22,11 +23,12 @@ public class Player
 	{
 		this.name = name;
 		this.HP = 100;
-		this.primaryWeapon = Weapon.randomWeapon(0,0,true);
-		this.secondaryWeapon = Weapon.randomWeapon(0,0,true);
+		this.primaryWeapon = new Weapon("", "(Slot vuoto)", null, 0, null);
+		this.secondaryWeapon = new Weapon("", "(Slot vuoto)", null, 0, null);
 		this.kills = 0;
 		this.damageDealt = 0;
 		this.poisonAmount = 0;
+		this.potion = null;
 	}
 	
 
@@ -54,6 +56,7 @@ public class Player
 			trueDamage = this.armour.attackAndCalculateTrueDamage(damage);
 		}
 		this.HP -= trueDamage;
+		if(this.HP < 0) this.HP = 0;
 		return trueDamage;
 	}
 	
@@ -70,10 +73,26 @@ public class Player
 	public void updateHP()
 	{
 		this.HP -= this.poisonAmount;
-		if(this.HP < 0)
+		if(this.HP <= 0)
 		{
 			this.HP = 0;
+			this.poisonAmount = 0;
 		}
+		else
+		{
+			if(this.potion != null)
+			{
+				if(this.HP < 20 || (this.poisonAmount > 0) || this.HP + this.potion.getHealing() - this.potion.getHealthCap() < this.potion.getHealing() / 2)
+				{
+					Potion pot = this.potion;
+					int HPprec = this.HP;
+					this.usePotion();
+					Narrator.narrateHealing(this, pot, HPprec);
+					
+				}
+			}
+		}
+
 	}
 	
 	public String getName()
@@ -173,6 +192,27 @@ public class Player
 	public void setPoisonAmount(int poisonAmount) 
 	{
 		this.poisonAmount = poisonAmount;
+	}
+
+
+	public Potion getPotion() 
+	{
+		return potion;
+	}
+
+
+	public void setPotion(Potion potion) 
+	{
+		this.potion = potion;
+	}
+	
+	public void usePotion()
+	{
+		if(this.potion != null)
+		{
+			this.potion.healPlayer(this);
+			this.potion = null;
+		}
 	}
 	
 	

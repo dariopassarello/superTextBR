@@ -22,8 +22,36 @@ public class Potion implements Lootable
 		{
 			effectiveHealing = HP + this.healing - this.healthCap;
 		}
+		player.setPoisonAmount(0);
 		player.heal(effectiveHealing);
 		
+	}
+	
+	
+	
+	public String getName() 
+	{
+		return name;
+	}
+	public void setName(String name) 
+	{
+		this.name = name;
+	}
+	public int getHealing() 
+	{
+		return healing;
+	}
+	public void setHealing(int healing) 
+	{
+		this.healing = healing;
+	}
+	public int getHealthCap() 
+	{
+		return healthCap;
+	}
+	public void setHealthCap(int healthCap) 
+	{
+		this.healthCap = healthCap;
 	}
 	@Override
 	public int getMetric() 

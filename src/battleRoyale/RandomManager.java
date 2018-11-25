@@ -10,12 +10,16 @@ public class RandomManager
 	public static int randomRange(int minValue,int maxValue)
 	{
 		Random rand = new Random();
+		if(minValue == maxValue)
+		{
+			return minValue;
+		}
 		return rand.nextInt(maxValue - minValue) + minValue;
 	}
 	public static boolean isInRandomRange(int minValue, int maxValue, int rangeMin,int rangeMax)
 	{
 		int num = RandomManager.randomRange(minValue, maxValue);
-		return isInRange(minValue,maxValue,num);
+		return isInRange(rangeMin,rangeMax,num);
 	}
 	public static boolean isInRange(int minValue, int maxValue, int value)
 	{
@@ -28,7 +32,7 @@ public class RandomManager
 			return false;
 		}
 	}
-	public static int randomRangeExcluded(int minValue,int maxValue, int... valuesNotAllowed)
+	public static int randomRangeExcluded(int minValue,int maxValue, Integer... valuesNotAllowed)
 	{
 		if(minValue > maxValue)
 		{
@@ -60,31 +64,41 @@ public class RandomManager
 			}
 			return 0;
 		}
-		int pos = randomRange(0,maxValue - minValue - arrayList.size());
-		int i;
-		for(i = minValue; i < pos + minValue;)
+		int rand;
+		do
 		{
-			if(!arrayList.contains(i)) i++;
+			rand = RandomManager.randomRange(minValue, maxValue);
 		}
-		return i;
+		while(arrayList.contains(rand));
+		return rand;
 	}
 	
-
-	public static int multiRange(int minValue, int maxValue, int... args)
+	public static int multiRange(int num, int... args)
 	{
-		int num = RandomManager.randomRange(minValue, maxValue);
 		Arrays.sort(args);
-		int res = -1;
+		if(num < args[0])
+		{
+			return 0;
+		}
+		if(num > args[args.length - 1])
+		{
+			return args.length;
+		}
 		for(int i = 0; i < args.length - 1; i++)
 		{
 			if(num >= args[i] && num <= args[i+1])
 			{
-				res = i;
-				break;
+				return i + 1;
 			}
 
 		}
-		return res;
+		return -1;
+	}
+
+	public static int multiRandomRange(int minValue, int maxValue, int... args)
+	{
+		int num = RandomManager.randomRange(minValue, maxValue);
+		return multiRange(num, args);
 	}
 	
 	public static int[] randomPermutation(int toPermutate[])

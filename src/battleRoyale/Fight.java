@@ -34,9 +34,9 @@ public class Fight
 		this.location = location;
 		this.players = players;
 		this.turn = 0;
+		
+		this.discipline = new int[players.length];
 		this.updateDiscipline(0);
-
-
 	}
 
 
@@ -83,7 +83,7 @@ public class Fight
 		int maxHP = 0;
 		for(int i = 0; i < this.players.length; i++)
 		{
-			this.discipline[i] = Fight.BASE_ESCAPE_SCORE + players[i].getHP() + Fight.ROUND_ESCAPE_BONUS * round;
+			this.discipline[i] = Fight.BASE_ESCAPE_SCORE + players[i].getHP() + Fight.ROUND_ESCAPE_BONUS * (round - 4);
 			if(i == 0) discipline[i] += Fight.FIGHT_STARTER_DISCIPLINE_BONUS;
 			if(players[i].isDisarmed()) this.discipline[i] += Fight.DISARMED_ESCAPE_BONUS;
 			if(players[i].getHP() > maxHP)
@@ -129,99 +129,102 @@ public class Fight
 		Player playerToHit;
 		FightResult res;
 
-		//
-		if(round > 0 && activePlayerNum == 0)
+		if(this.players.length > 1)
 		{
-			this.shuffleArray();
-		}
-		if(this.turn > 1)
-		{
-			this.updateDiscipline(round);
-			escape = this.tryEscapeFight(discipline[activePlayerNum]);
-			
-			if(escape == true)
+			if(round > 0 && activePlayerNum == 0)
 			{
-				
-				res = new FightResult(this.players[activePlayerNum],null,null,null,Fight.STATUS_ESCAPE,this.location);
-				this.removePlayerFromFight(this.players[activePlayerNum]);
-				res.playersRemaingInFight = this.players.length;
-				return res;
+				this.shuffleArray();
 			}
-		}
-		//Sorteggia l'arma
-		//Se al turno 0 il primo giocatore ha un arma stealth attacca con quella facendo piu danno se colpisce
-		if(this.players[activePlayerNum].getMaxWeaponTier() == 0 || this.players[activePlayerNum].isDisarmed())
-		{
-			weaponUsed = Weapon.randomWeapon(0,0,true);
-		}
-		else
-		{
-			//Se il giocatore � disarmato o non ha armi di livello >0. Utilizza un arma di livello 0 (corpo a corpo)
-			if(this.turn == 0 && this.players[1].getSecondaryWeapon().isStealth() == true)
+			if(this.turn > 1)
 			{
-				weaponUsed = this.players[activePlayerNum].getSecondaryWeapon();
-				damageMultiplier = Fight.STEALTH_FIRST_DAMAGE_MULTIPLIER;
-				hitMultiplier = Fight.STEALTH_FIRST_HIT_RATE_MULTIPLIER;
+				this.updateDiscipline(round);
+				escape = this.tryEscapeFight(discipline[activePlayerNum]);
+				
+				if(escape == true)
+				{
+					
+					res = new FightResult(null,this.players[activePlayerNum],null,null,Fight.STATUS_ESCAPE,this.location);
+					this.removePlayerFromFight(this.players[activePlayerNum]);
+					res.playersRemaingInFight = this.players.length;
+					return res;
+				}
+			}
+			//Sorteggia l'arma
+			//Se al turno 0 il primo giocatore ha un arma stealth attacca con quella facendo piu danno se colpisce
+			if(this.players[activePlayerNum].getMaxWeaponTier() == 0 || this.players[activePlayerNum].isDisarmed())
+			{
+				weaponUsed = Weapon.randomWeapon(0,0,true);
 			}
 			else
 			{
-				//Utilizza con molta probabilit� l'arma di livello piu alto
-				Weapon bestWeapon = Weapon.bestWeapon(this.players[activePlayerNum].getPrimaryWeapon(), this.players[activePlayerNum].getSecondaryWeapon());
-				Weapon worstWeapon = Weapon.worstWeapon(this.players[activePlayerNum].getPrimaryWeapon(), this.players[activePlayerNum].getSecondaryWeapon());
-				if(RandomManager.isInRandomRange(0, 100, 0, Fight.USE_WEAKEST_WEAPON_CHANCE))
+				//Se il giocatore � disarmato o non ha armi di livello >0. Utilizza un arma di livello 0 (corpo a corpo)
+				if(this.turn == 0 && this.players[1].getSecondaryWeapon().isStealth() == true)
 				{
-					weaponUsed = worstWeapon;
+					weaponUsed = this.players[activePlayerNum].getSecondaryWeapon();
+					damageMultiplier = Fight.STEALTH_FIRST_DAMAGE_MULTIPLIER;
+					hitMultiplier = Fight.STEALTH_FIRST_HIT_RATE_MULTIPLIER;
 				}
 				else
 				{
-					weaponUsed = bestWeapon;
+					//Utilizza con molta probabilit� l'arma di livello piu alto
+					Weapon bestWeapon = Weapon.bestWeapon(this.players[activePlayerNum].getPrimaryWeapon(), this.players[activePlayerNum].getSecondaryWeapon());
+					Weapon worstWeapon = Weapon.worstWeapon(this.players[activePlayerNum].getPrimaryWeapon(), this.players[activePlayerNum].getSecondaryWeapon());
+					if(RandomManager.isInRandomRange(0, 100, 0, Fight.USE_WEAKEST_WEAPON_CHANCE))
+					{
+						weaponUsed = worstWeapon;
+					}
+					else
+					{
+						weaponUsed = bestWeapon;
+					}
 				}
 			}
-		}
-		//Colpiscei un giocatore a caso
-		playerToHitNumber = RandomManager.randomRangeExcluded(0, players.length, activePlayerNum);
-		playerToHit = this.players[playerToHitNumber];
-		HitStats damageStats = weaponUsed.tryHit(playerToHit,damageMultiplier,hitMultiplier); //hit the player
-		this.players[activePlayerNum].addDamageDealt(damageStats.damageDealt);
-		//Se colpisci critico disarma l'avversario
-		if(damageStats.typeOfDamage == HitStats.DAMAGE_CRITICAL_HIT)
-		{
-			playerToHit.setDisarmed(true);
-			disarmingInThisRound = true;
-		}
-		//Crea il resoconto del fight per il narratore
-		if(playerToHit.isAlive() == true)
-		{
-			res = new FightResult(playerToHit,this.players[activePlayerNum],damageStats,weaponUsed,Fight.STATUS_STILL_FIGHTING,this.location);
-			
-		}
-		else if(playerToHit.isAlive() == false && this.turn > 0)
-		{
-			res = new FightResult(playerToHit,this.players[activePlayerNum],damageStats,weaponUsed,Fight.STATUS_KILL,this.location);
-			this.players[activePlayerNum].addKill();
-		}
-		else
-		{
-			res = new FightResult(playerToHit,this.players[activePlayerNum],damageStats,weaponUsed,Fight.STATUS_STEALTH_KILL,this.location);
-			this.players[activePlayerNum].addKill();
-		}
-		//Incrementa numero turno
-		this.turn++;
-		if(disarmingInThisRound == true)
-		{
-			res.unarmed = true;
-		}
-		//Rimuovi giocatori morti (per fight o veleno)
-		for(Player player : this.players)
-		{
-			if(player.isAlive() == false)
+			//Colpiscei un giocatore a caso
+			do
 			{
-				this.removePlayerFromFight(player);
+				playerToHitNumber = RandomManager.randomRangeExcluded(0, players.length, activePlayerNum);
+				
 			}
+			while(playerToHitNumber == activePlayerNum);
+			playerToHit = this.players[playerToHitNumber];
+			HitStats damageStats = weaponUsed.tryHit(playerToHit,damageMultiplier,hitMultiplier); //hit the player
+			this.players[activePlayerNum].addDamageDealt(damageStats.damageDealt);
+			//Se colpisci critico disarma l'avversario
+			if(damageStats.typeOfDamage == HitStats.DAMAGE_CRITICAL_HIT)
+			{
+				playerToHit.setDisarmed(true);
+				disarmingInThisRound = true;
+			}
+			//Crea il resoconto del fight per il narratore
+			if(playerToHit.isAlive() == true)
+			{
+				res = new FightResult(playerToHit,this.players[activePlayerNum],damageStats,weaponUsed,Fight.STATUS_STILL_FIGHTING,this.location);
+				
+			}
+			else if(playerToHit.isAlive() == false && this.turn > 0)
+			{
+				res = new FightResult(playerToHit,this.players[activePlayerNum],damageStats,weaponUsed,Fight.STATUS_KILL,this.location);
+				this.players[activePlayerNum].addKill();
+				this.removePlayerFromFight(playerToHit);
+			}
+			else
+			{
+				res = new FightResult(playerToHit,this.players[activePlayerNum],damageStats,weaponUsed,Fight.STATUS_STEALTH_KILL,this.location);
+				this.players[activePlayerNum].addKill();
+				this.removePlayerFromFight(playerToHit);
+			}
+			//Incrementa numero turno
+			this.turn++;
+			if(disarmingInThisRound == true)
+			{
+				res.unarmed = true;
+			}
+			//
+			res.playersRemaingInFight = this.players.length;
+		
+			return res;
 		}
-		//
-		res.playersRemaingInFight = this.players.length;
-		return res;
+		return null;
 	}
 	
 	private void shuffleArray()
