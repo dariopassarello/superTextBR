@@ -1,5 +1,8 @@
 package battleRoyale;
-public class Player 
+
+import java.util.Comparator;
+
+public class Player
 {
 	//NAME
 	private String name;
@@ -30,7 +33,36 @@ public class Player
 		this.poisonAmount = 0;
 		this.potion = null;
 	}
-	
+
+
+	static class KillComparator implements Comparator<Player>
+	{
+		public int compare(Player p1,Player p2)
+		{
+			if(p1.getKills() == p2.getKills())
+			{
+				if(p1.getDamageDealt() == p2.getDamageDealt())
+				{
+					return 0;
+				}
+				else if(p1.getDamageDealt() > p2.getDamageDealt())
+				{
+					return 1;
+				}
+				else
+				{
+					return -1;
+				}
+
+			}
+			else if(p1.getKills() > p2.getKills())
+			{
+				return 1;
+			}
+			else return -1;
+
+		}
+	}
 
 	public Weapon getPrimaryWeapon() {
 		return primaryWeapon;
@@ -119,7 +151,7 @@ public class Player
 	
 	public int getMaxWeaponTier()
 	{
-		return Math.max(this.primaryWeapon.getTier(), this.secondaryWeapon.getTier());
+		return Math.max(this.primaryWeapon.getLevel(), this.secondaryWeapon.getLevel());
 	}
 	
 	public void setName(String name)

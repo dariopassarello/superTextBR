@@ -2,6 +2,8 @@ package battleRoyale;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class Narrator 
@@ -9,10 +11,11 @@ public final class Narrator
 	public static CopyOnWriteArrayList<Player> watchlist;
 	public static int minPriority;
 	private static SimpleDateFormat sdf = new SimpleDateFormat();
-	
-	public static void sayDayHour(int day, int hour) 
+	public static boolean wait = false;
+
+	public static void sayDayHour(int day, int hour, int players)
 	{
-		System.out.printf("\nGIORNO: %d,ORE %d:00\n",day,hour);
+		System.out.printf("\n\n\nGIORNO: %d\n ORE %d:00\n GIOCATORI IN VITA: %d",day,hour,players);
 	}
 	
 	public static void narratePlayersRemaing(int players)
@@ -22,16 +25,18 @@ public final class Narrator
 	
 	public static void narratePreFight(Player[] players,Location loc)
 	{
+		System.out.println("\033[2");
 		for(Player p : players)
 		{	
-			if(p.getArmour() != null)
-			{
-				System.out.printf("\n %s (HP: %d ,ARMOUR: %s)",p.getName(),p.getHP(),p.getArmour().getName());
-			}
-			else
+			//if(p.getArmour() != null)
+			//{
+				System.out.printf("\n %70s (HP: %3d) [%40s (%1d)|%40s (%1d)]",p.getName(),p.getHP(),p.getPrimaryWeapon().getName(),p.getPrimaryWeapon().getLevel()
+						,p.getSecondaryWeapon().getName(),p.getSecondaryWeapon().getLevel());
+			//}
+			/*else
 			{
 				System.out.printf("\n %s (HP: %d)",p.getName(),p.getHP());
-			}
+			}*/
 		}
 		System.out.printf("\niniziano a combattere %s %s! BUONA FORTUNA!",loc.getPreposition(),loc.getName());
 	}
@@ -45,6 +50,10 @@ public final class Narrator
 	public static void narrateHealing(Player player, Potion potion, int HPprec)
 	{
 		System.out.printf("\n%s (%d HP) ha usato %s, recuperando %d HP",player.getName(),player.getHP(),potion.getName(),player.getHP() - HPprec);
+		if(wait == true)
+		{
+			Narrator.randomSleep(800,1600);
+		}
 	}
 	
 	public static void narratePoison(CopyOnWriteArrayList<Player> players)
@@ -89,8 +98,8 @@ public final class Narrator
 		{
 			if(res.damageStats.typeOfDamage == HitStats.DAMAGE_CRITICAL_HIT)
 			{
-				System.out.printf("\n%s (%d HP) ha colpito MOLTO FORTE %s (%d HP) %s %s, (Danno: %d HP)\n",res.playerHitter.getName(),res.playerHitter.getHP(),
-						res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName(),res.damageStats.damageDealt);
+				System.out.printf("\n%s (%d HP) ha colpito MOLTO FORTE %s (%d HP) %s %s, (Danno: %d HP)\n%s è Disarmato",res.playerHitter.getName(),res.playerHitter.getHP(),
+						res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName(),res.damageStats.damageDealt,res.playerToHit.getName());
 			}
 			else if(res.damageStats.typeOfDamage == HitStats.DAMAGE_FULL_HIT)
 			{
@@ -116,21 +125,52 @@ public final class Narrator
 					res.playerToHit.getName(),res.playerToHit.getHP(),res.weaponUsed.getPrefix(),res.weaponUsed.getName(),res.location.getPreposition(),res.location.getName(),res.damageStats.damageDealt);
 		}
 	}
-	
+	public static void pseudoClearScreen()
+	{
+		for(int i = 0; i < 50; i++)
+		{
+			System.out.printf("\n");
+		}
+	}
+
+
+	public static void killersStat(CopyOnWriteArrayList<Player> players,int top)
+	{
+
+		players = Narrator.sortPlayers(players,new Player.KillComparator(), true);
+
+		for(int i = 0; i < Math.min(top,players.size()); i++)
+		{
+			System.out.format("\n%3d.%70s%3d%5s",i + 1,players.get(i).getName(),players.get(i).getKills(),players.get(i).getDamageDealt());
+		}
+	}
+
 	public static void narrateUpgradeWeapon(Player player,Weapon weaponOld, Weapon weaponNew)
 	{
 		System.out.printf("\n%s ha potenziato \"%s \" in \"%s \" (LIVELLO %d) \n",player.getName().toUpperCase(),weaponOld.getName(),weaponNew.getName().toUpperCase(),
 				weaponNew.getLevel());
 		System.out.printf("ARMI: [%s(%d) |%s(%d) ]\n",player.getPrimaryWeapon().getName(),player.getPrimaryWeapon().getLevel(),
 				player.getSecondaryWeapon().getName(),player.getSecondaryWeapon().getLevel());
+		if(wait == true)
+		{
+			Narrator.randomSleep(800,1600);
+		}
 	}
 	public static void narrateEquipArmour(Player player,Armour armour)
 	{
 		System.out.printf("\n%s ha equipaggiato \"%s \" (HEALTH:%d) , \n",player.getName().toUpperCase(),armour.getName().toUpperCase(),armour.getMaxHealth());
+		if(wait == true)
+		{
+			Narrator.randomSleep(800,1600);
+		}
 	}
 	public static void narrateEquipPotion(Player player,Potion potion)
 	{
 		System.out.printf("\n%s ha raccolto \"%s \" (HEAL:%d/%d) , \n",player.getName().toUpperCase(),potion.getName(),potion.getHealing(),potion.getHealthCap());
+		if(wait == true)
+		{
+			Narrator.randomSleep(800,1600);
+		}
 	}
 	public static void narrateFindWeapon(Player player,Weapon weapon)
 	{
@@ -138,6 +178,51 @@ public final class Narrator
 				player.getSecondaryWeapon().getName());
 		System.out.printf("ARMI: [%s (%d) |%s (%d) ]\n",player.getPrimaryWeapon().getName(),player.getPrimaryWeapon().getLevel(),
 				player.getSecondaryWeapon().getName(),player.getSecondaryWeapon().getLevel());
+		if(wait == true)
+		{
+			Narrator.randomSleep(800,1600);
+		}
 	}
+
+	public static void randomSleep(int minSleep,int maxSleep)
+	{
+		Random rand = new Random();
+		if(minSleep == maxSleep)
+		{
+			try {
+				Thread.sleep(minSleep);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
+		int sleepTime = rand.nextInt(maxSleep - minSleep) + minSleep;
+		try {
+			Thread.sleep(sleepTime);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static CopyOnWriteArrayList<Player> sortPlayers(CopyOnWriteArrayList<Player> players,Comparator<Player> c,boolean reverse)
+	{
+		for(int i = 0; i < players.size() - 1; i++)
+		{
+			for(int j = i + 1; j < players.size(); j++)
+			{
+				int comp = c.compare(players.get(i),players.get(j));
+				if((comp > 0 && reverse == false) || (comp < 0 && reverse == true))
+				{
+					Player temp = players.get(i);
+					players.set(i,players.get(j));
+					players.set(j,temp);
+				}
+			}
+		}
+		return players;
+	}
+
 
 }

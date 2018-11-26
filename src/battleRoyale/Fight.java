@@ -144,6 +144,7 @@ public class Fight
 				{
 					
 					res = new FightResult(null,this.players[activePlayerNum],null,null,Fight.STATUS_ESCAPE,this.location);
+					this.players[activePlayerNum].setDisarmed(false);
 					this.removePlayerFromFight(this.players[activePlayerNum]);
 					res.playersRemaingInFight = this.players.length;
 					return res;
@@ -212,6 +213,10 @@ public class Fight
 				res = new FightResult(playerToHit,this.players[activePlayerNum],damageStats,weaponUsed,Fight.STATUS_STEALTH_KILL,this.location);
 				this.players[activePlayerNum].addKill();
 				this.removePlayerFromFight(playerToHit);
+			}
+			if(this.players.length == 1)
+			{
+				this.players[0].setDisarmed(false);
 			}
 			//Incrementa numero turno
 			this.turn++;

@@ -34,36 +34,7 @@ public class Weapon implements Lootable
 	
 	
 	public static CopyOnWriteArrayList<Weapon> weaponList; //Lista statica di tutte le armi
-	@Deprecated
-	public Weapon(String prefix, String name,int types[],int hitRate,int maxDamage,int level)
-	{
-		this.prefix = prefix;
-		this.name = name;
-		this.weaponAttributes = new ArrayList<Integer>(); 
-		for(int attribute : types)
-		{
-			if(!this.weaponAttributes.contains(attribute)) weaponAttributes.add(attribute);
-		}
-		this.hitRate = hitRate;
-		this.maxDamage = maxDamage;
-		this.level = level;
-		this.baseWeapon = null;
-	}
-	@Deprecated
-	public Weapon(String prefix, String name,int types[],int hitRate,int maxDamage,int level,Weapon baseWeapon)
-	{
-		this.prefix = prefix;
-		this.name = name;
-		this.weaponAttributes = new ArrayList<Integer>(); 
-		for(int attribute : types)
-		{
-			if(!this.weaponAttributes.contains(attribute)) weaponAttributes.add(attribute);
-		}
-		this.hitRate = hitRate;
-		this.maxDamage = maxDamage;
-		this.level = level;
-		this.baseWeapon = baseWeapon;
-	}
+
 	/**
 	 * 
 	 * @param prefix The article for the weapon when is printed to screen

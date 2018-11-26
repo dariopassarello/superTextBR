@@ -23,7 +23,7 @@ public class GameFlow
 
 	private static final int FIGHT_PROBABILITY = 80;
 	private static final int FIND_OBJECT_RATE_MAX = 40;
-	private static final int FIND_OBJECT_RATE_MIN = 3;
+	private static final int FIND_OBJECT_RATE_MIN = 4;
 	private static final int UPGRADE_WEAPON_RATE = 20;
 	private static final int[] WEAPON_TICKS = {5,35,60,90,120};
 	private static final int[] NUMBER_OF_FIGHTERS_ODDS = {32,48,56,60,62};
@@ -59,10 +59,8 @@ public class GameFlow
 	{
 		while(this.getAlivePlayers() > 1)
 		{
-			
-			
-			promptEnterKey();
-			Narrator.sayDayHour(day(this.tick), hour(this.tick));
+
+			Narrator.sayDayHour(day(this.tick), hour(this.tick), getAlivePlayers());
 			this.maxSpawnLevel = RandomManager.multiRange(this.tick, GameFlow.WEAPON_TICKS);
 			//LOOT
 			this.tryPlayersLooting();
@@ -81,7 +79,6 @@ public class GameFlow
 					playerNumbers.add(RandomManager.randomRangeExcluded(0, this.getAlivePlayers(), playerNumbers.toArray(new Integer[playerNumbers.size()])));
 					playersArrayList.add(this.players.get(playerNumbers.get(i)));
 				}
-
 				playersArray = playersArrayList.toArray(new Player[playersArrayList.size()]);
 				Location location = locations.get(RandomManager.randomRange(0, locations.size()));
 				Narrator.narratePreFight(playersArray, location);
@@ -90,11 +87,15 @@ public class GameFlow
 				do
 				{
 					res = fight.nextHit();
+					Narrator.narrateFight(res);
 					if(res.fightStatus == Fight.STATUS_KILL || res.fightStatus == Fight.STATUS_STEALTH_KILL)
 					{
 						this.killPlayer(res.playerToHit);
 					}
-					Narrator.narrateFight(res);
+					if(Narrator.wait == true)
+					{
+						Narrator.randomSleep(1500,3500);
+					}
 				}
 				while(res.playersRemaingInFight > 1);
 				Narrator.narratePostFight();
@@ -108,6 +109,12 @@ public class GameFlow
 				{
 					this.killPlayer(player);
 				}
+			}
+			//LOOT
+			this.tryPlayersLooting();
+			if(hour(this.tick) == 0)
+			{
+				Narrator.killersStat(players,10);
 			}
 			this.tick++;
 		}
@@ -247,27 +254,7 @@ public class GameFlow
 		return (int) ((1 - k)*GameFlow.FIND_OBJECT_RATE_MAX + k*GameFlow.FIND_OBJECT_RATE_MIN);
 	}
 	
-	private void randomSleep(int minSleep,int maxSleep)
-	{
-		Random rand = new Random();
-		if(minSleep == maxSleep)
-		{
-			try {
-				Thread.sleep(minSleep);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return;
-		}
-		int sleepTime = rand.nextInt(maxSleep - minSleep) + minSleep;
-		try {
-			Thread.sleep(sleepTime);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 	
 
 	public void promptEnterKey()
