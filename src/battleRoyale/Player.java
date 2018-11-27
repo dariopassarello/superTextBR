@@ -15,6 +15,7 @@ public class Player
 	private int HP;
 	private int poisonAmount;
 	private boolean disarmed;
+	private int discipline;
 	//STATS
 	private int kills;
 	private int damageDealt;
@@ -31,6 +32,8 @@ public class Player
 		this.kills = 0;
 		this.damageDealt = 0;
 		this.poisonAmount = 0;
+		this.disarmed = false;
+		this.discipline = 0;
 		this.potion = null;
 	}
 
@@ -63,6 +66,12 @@ public class Player
 
 		}
 	}
+	public String getName()
+	{
+		return this.name;
+	}
+
+
 
 	public Weapon getPrimaryWeapon() {
 		return primaryWeapon;
@@ -127,10 +136,7 @@ public class Player
 
 	}
 	
-	public String getName()
-	{
-		return this.name;
-	}
+
 
 	public int getHP()
 	{
@@ -232,8 +238,17 @@ public class Player
 		return potion;
 	}
 
+	public int getDiscipline()
+	{
+		return discipline;
+	}
 
-	public void setPotion(Potion potion) 
+	public void setDiscipline(int discipline)
+	{
+		this.discipline = discipline;
+	}
+
+	public void setPotion(Potion potion)
 	{
 		this.potion = potion;
 	}

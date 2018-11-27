@@ -9,7 +9,8 @@ public class FightResult
 	public int playersRemaingInFight;
 	public Location location;
 	public boolean unarmed;
-	public FightResult(Player playerToHit, Player playerHitter, HitStats damageStats, Weapon weaponUsed, int fightStatus, Location location) 
+	public Fight fight;
+	public FightResult(Fight fight,Player playerToHit, Player playerHitter, HitStats damageStats, Weapon weaponUsed, int fightStatus, Location location)
 	{
 		
 		this.playerToHit = playerToHit;
@@ -18,5 +19,6 @@ public class FightResult
 		this.weaponUsed = weaponUsed;
 		this.fightStatus = fightStatus;
 		this.location = location;
+		this.fight = fight;
 	}
 }

@@ -5,6 +5,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public interface Lootable 
 {
 	public abstract int getMetric();
+
+	String getName();
 	
 	public static CopyOnWriteArrayList<Weapon> getWeapons(CopyOnWriteArrayList<Lootable> lootables)
 	{

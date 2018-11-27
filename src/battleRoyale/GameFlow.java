@@ -20,12 +20,13 @@ public class GameFlow
 	private int maxSpawnLevel;
 	private int gamemode;
 	private int tick;
+	private LiveNarrator liveNarrator;
 
 	private static final int FIGHT_PROBABILITY = 80;
 	private static final int FIND_OBJECT_RATE_MAX = 40;
 	private static final int FIND_OBJECT_RATE_MIN = 4;
 	private static final int UPGRADE_WEAPON_RATE = 20;
-	private static final int[] WEAPON_TICKS = {5,35,60,90,120};
+	private static final int[] WEAPON_TICKS = {1,4,8,11,14};
 	private static final int[] NUMBER_OF_FIGHTERS_ODDS = {32,48,56,60,62};
 												//0 - 50 Weapon, 51-80 Armour, 80-99 Potion
 	private static final int[] TYPE_OF_LOOT_ODDS = {50,80};
@@ -47,6 +48,8 @@ public class GameFlow
 		this.gamemode = gameMode;
 		Weapon.weaponList = this.weapons;
 		this.tick = 0;
+		this.liveNarrator = new LiveNarrator(this, this.players,null,0);
+		LiveNarrator.clearScreen();
 	}
 	
 	
@@ -60,7 +63,8 @@ public class GameFlow
 		while(this.getAlivePlayers() > 1)
 		{
 
-			Narrator.sayDayHour(day(this.tick), hour(this.tick), getAlivePlayers());
+			//Narrator.sayDayHour(day(this.tick), hour(this.tick), getAlivePlayers());
+
 			this.maxSpawnLevel = RandomManager.multiRange(this.tick, GameFlow.WEAPON_TICKS);
 			//LOOT
 			this.tryPlayersLooting();
@@ -81,41 +85,36 @@ public class GameFlow
 				}
 				playersArray = playersArrayList.toArray(new Player[playersArrayList.size()]);
 				Location location = locations.get(RandomManager.randomRange(0, locations.size()));
-				Narrator.narratePreFight(playersArray, location);
+
+				//Narrator.narratePreFight(playersArray, location);
 				Fight fight = new Fight(location,playersArray);
-				FightResult res;
+				//FightResult res;
+				liveNarrator.startFight(fight);
 				do
 				{
-					res = fight.nextHit();
-					Narrator.narrateFight(res);
-					if(res.fightStatus == Fight.STATUS_KILL || res.fightStatus == Fight.STATUS_STEALTH_KILL)
+					fight.nextHit();
+					liveNarrator.updatePrintFight(fight);
+					if(fight.getStatus() == Fight.STATUS_KILL || fight.getStatus() == Fight.STATUS_STEALTH_KILL)
 					{
-						this.killPlayer(res.playerToHit);
-					}
-					if(Narrator.wait == true)
-					{
-						Narrator.randomSleep(1500,3500);
+						this.killPlayer(fight.getTargetPlayer());
 					}
 				}
-				while(res.playersRemaingInFight > 1);
-				Narrator.narratePostFight();
+				while(fight.getNumberOfPlayers() > 1);
+				liveNarrator.endFight();
 			}
-			Narrator.narratePoison(players);
 
+			liveNarrator.poisonedPlayers();
 			for(Player player : this.players)
 			{
 				player.updateHP();				
 				if(player.getHP() <= 0)
 				{
-					this.killPlayer(player);
+					liveNarrator.poisonDeaths(player);
 				}
 			}
+
 			//LOOT
 			this.tryPlayersLooting();
-			if(hour(this.tick) == 0)
-			{
-				Narrator.killersStat(players,10);
-			}
 			this.tick++;
 		}
 	}
@@ -143,12 +142,12 @@ public class GameFlow
 					if(numberOfUpgradable == 3) numberOfUpgradable = RandomManager.randomRange(1, 2);
 					if(numberOfUpgradable == 2)
 					{
-						Narrator.narrateUpgradeWeapon(player, player.getPrimaryWeapon(), player.getPrimaryWeapon().getLevelUpWeapon());
+						liveNarrator.upgradeWeapon(player,player.getPrimaryWeapon());
 						player.setPrimaryWeapon(player.getPrimaryWeapon().getLevelUpWeapon());
 					}
 					else
 					{
-						Narrator.narrateUpgradeWeapon(player, player.getSecondaryWeapon(), player.getSecondaryWeapon().getLevelUpWeapon());
+						liveNarrator.upgradeWeapon(player,player.getSecondaryWeapon());
 						player.setSecondaryWeapon(player.getSecondaryWeapon().getLevelUpWeapon());
 					}
 				}
@@ -177,7 +176,7 @@ public class GameFlow
 								{
 									
 									player.setPrimaryWeapon(weaponFound);
-									Narrator.narrateFindWeapon(player, weaponFound);
+									liveNarrator.updateFindLootable(player, weaponFound);
 								}
 							}
 							else
@@ -186,7 +185,7 @@ public class GameFlow
 								{
 									
 									player.setSecondaryWeapon(weaponFound);
-									Narrator.narrateFindWeapon(player, weaponFound);
+									liveNarrator.updateFindLootable(player, weaponFound);
 								}
 							}
 						}
@@ -199,7 +198,7 @@ public class GameFlow
 							if(ok)
 							{
 								player.setArmour(((Armour) itemFound).getNewArmour());
-								Narrator.narrateEquipArmour(player, (Armour) itemFound);
+								liveNarrator.updateFindLootable(player, (Armour) itemFound);
 							}
 						}
 						if(itemFound instanceof Potion)
@@ -209,7 +208,7 @@ public class GameFlow
 							if(ok)
 							{
 								player.setPotion((Potion) itemFound);
-								Narrator.narrateEquipPotion(player, (Potion) itemFound);
+								liveNarrator.updateFindLootable(player, (Potion) itemFound);
 							}
 						}
 					}
@@ -226,7 +225,17 @@ public class GameFlow
 	{
 		return (tick + 12)%24;
 	}
-	
+
+	public int getDay()
+	{
+		return day(this.tick);
+	}
+	public int getHour()
+	{
+		return hour(this.tick);
+	}
+
+
 	private void killPlayer(Player player)
 	{
 		this.players.remove(player);
@@ -234,7 +243,7 @@ public class GameFlow
 		Narrator.narratePlayersRemaing(this.getAlivePlayers());
 	}
 	
-	private int getAlivePlayers()
+	public int getAlivePlayers()
 	{
 		int alive = 0;
 		for(Player player : this.players)
@@ -255,17 +264,9 @@ public class GameFlow
 	}
 	
 
+
 	
 
-	public void promptEnterKey()
-	{
 
-		 System.out.println("Press \"ENTER\" to continue...");
-		        try {
-		            int read = System.in.read(new byte[2]);
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		        }
-	}
 
 }

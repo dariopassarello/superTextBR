@@ -11,7 +11,7 @@ public final class Narrator
 	public static CopyOnWriteArrayList<Player> watchlist;
 	public static int minPriority;
 	private static SimpleDateFormat sdf = new SimpleDateFormat();
-	public static boolean wait = false;
+	public static boolean wait = true;
 
 	public static void sayDayHour(int day, int hour, int players)
 	{
@@ -25,20 +25,14 @@ public final class Narrator
 	
 	public static void narratePreFight(Player[] players,Location loc)
 	{
-		System.out.println("\033[2");
+		//Clear screen
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
 		for(Player p : players)
 		{	
-			//if(p.getArmour() != null)
-			//{
-				System.out.printf("\n %70s (HP: %3d) [%40s (%1d)|%40s (%1d)]",p.getName(),p.getHP(),p.getPrimaryWeapon().getName(),p.getPrimaryWeapon().getLevel()
-						,p.getSecondaryWeapon().getName(),p.getSecondaryWeapon().getLevel());
-			//}
-			/*else
-			{
-				System.out.printf("\n %s (HP: %d)",p.getName(),p.getHP());
-			}*/
+			Narrator.printHealtBar(String.format("\n%-70s [",p.getName()),String.format("] %d HP\n",p.getHP()),p.getHP(),100,40,'X');
 		}
-		System.out.printf("\niniziano a combattere %s %s! BUONA FORTUNA!",loc.getPreposition(),loc.getName());
+		//System.out.printf("\niniziano a combattere %s %s! BUONA FORTUNA!",loc.getPreposition(),loc.getName());
 	}
 	
 	public static void narratePostFight()
@@ -86,10 +80,28 @@ public final class Narrator
 		}
 
 	}
-	
+
+	public static void printHealtBar(String preText,String postText,int value,int maxValue,int lenght,char barSymbol)
+	{
+		System.out.printf("%s" ,preText);
+		int numberOfChars = Math.min((int) Math.ceil(((float) value/maxValue)*lenght),lenght);
+		for(int i = 0; i < lenght; i++)
+		{
+			if(i < numberOfChars)
+			{
+				System.out.printf("%c",barSymbol);
+			}
+			else {
+				System.out.printf(" ");
+			}
+		}
+		System.out.printf("%s",postText);
+	}
+
+	//echo -e "\xE2\x98\xA0"
 	public static void narrateFight(FightResult res)
 	{
-		
+		narratePreFight(res.fight.getPlayers(),res.location);
 		if(res.fightStatus == Fight.STATUS_ESCAPE)
 		{
 			System.out.printf("\n%s e' fuggito, gli rimangono %d HP",res.playerHitter.getName(),res.playerHitter.getHP());
