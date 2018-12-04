@@ -23,10 +23,10 @@ public class GameFlow
 	private LiveNarrator liveNarrator;
 
 	private static final int FIGHT_PROBABILITY = 80;
-	private static final int FIND_OBJECT_RATE_MAX = 40;
-	private static final int FIND_OBJECT_RATE_MIN = 4;
+	private static final int FIND_OBJECT_RATE_MAX = 25;
+	private static final int FIND_OBJECT_RATE_MIN = 15;
 	private static final int UPGRADE_WEAPON_RATE = 20;
-	private static final int[] WEAPON_TICKS = {1,4,8,11,14};
+	private static final int[] WEAPON_TICKS = {3,5,8,11,15};
 	private static final int[] NUMBER_OF_FIGHTERS_ODDS = {32,48,56,60,62};
 												//0 - 50 Weapon, 51-80 Armour, 80-99 Potion
 	private static final int[] TYPE_OF_LOOT_ODDS = {50,80};
@@ -106,16 +106,26 @@ public class GameFlow
 			liveNarrator.poisonedPlayers();
 			for(Player player : this.players)
 			{
-				player.updateHP();				
-				if(player.getHP() <= 0)
+				player.updateHP();
+				if(player.getPotion() != null)
 				{
-					liveNarrator.poisonDeaths(player);
+					Potion pt = player.getPotion();
+					if(player.getPoisonAmount() > 0 || (Math.min(player.getHP() + pt.getHealing(),pt.getHealthCap()) - player.getHP() > pt.getHealing()/2))
+					{
+						int h = player.givePotion(pt);
+						liveNarrator.playerHealing(player, pt, h);
+						player.setPotion(null);
+					}
 				}
 			}
 
 			//LOOT
 			this.tryPlayersLooting();
 			this.tick++;
+		}
+		if(players.size() == 1)
+		{
+			liveNarrator.announceWinner(players.get(0));
 		}
 	}
 	

@@ -8,6 +8,9 @@ public class Armour implements Lootable
 	private float damageProtection; //Less than 1
 	private int maxHealth;
 	private int HP;
+
+	public static final int PERFORATING_PROTECTION_REDUCTION = 2;
+
 	public Armour(String name, float damageProtection, int maxHealth) 
 	{
 		
@@ -17,25 +20,17 @@ public class Armour implements Lootable
 		this.HP = maxHealth;
 	}
 	
-	public int attackAndCalculateTrueDamage(int attackDamage)
+	public int attackAndCalculateTrueDamage(int attackDamage,boolean perforating)
 	{
 		int trueDamage, armourDamage;
 		if(this.HP > 0)
 		{
-			armourDamage = (int) Math.ceil(attackDamage*(1 - damageProtection));
-			trueDamage = attackDamage - armourDamage;
-			if(armourDamage < this.HP)
+			this.HP--;
+			if(perforating)
 			{
-				this.HP -= armourDamage;
-				
+				 damageProtection = damageProtection / Armour.PERFORATING_PROTECTION_REDUCTION;
 			}
-			else
-			{
-				trueDamage += armourDamage - this.HP;
-				this.HP = 0;
-			}
-			return trueDamage;
-				
+			return (int)Math.ceil((float)attackDamage*(1 - this.damageProtection));
 		}
 		else
 		{

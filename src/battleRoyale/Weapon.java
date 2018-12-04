@@ -29,7 +29,7 @@ public class Weapon implements Lootable
 	protected static final int CRITICAL_HIT_TRESH = 90; //90-99 Damage = CRITICAL_MULTIPLIER*Max Damage
 	protected static final float CRITICAL_MULTIPLIER = 2.0f;
 	protected static final int DAMAGE_LEVEL[] = {25,35,50,65,75,85,95,105,120};
-	protected static final int HIT_RATE_LEVEL[] = {60,64,68,72,75,77,80,83,87};
+	protected static final int HIT_RATE_LEVEL[] = {72,75,78,81,84,87,90,93,95};
 	protected static final int POISON_AMOUNT[] = {0,1,2,2,3,5,7,9};
 	
 	
@@ -184,7 +184,7 @@ public class Weapon implements Lootable
 		int damageCorrected = (int) (damageDealt*damageMultiplier);
 		
 		int trueDamage = player.attack(damageCorrected,this.weaponAttributes.contains(Weapon.TYPE_PERFORATING));
-		if(damageCorrected != 0 && this.weaponAttributes.contains(Weapon.TYPE_POISONUS));
+		if(damageCorrected > 0 && trueDamage > 0 && this.weaponAttributes.contains(Weapon.TYPE_POISONUS));
 		{
 			player.setPoisonAmount(Weapon.POISON_AMOUNT[this.level]);
 		}

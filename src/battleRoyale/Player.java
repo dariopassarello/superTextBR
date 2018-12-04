@@ -21,6 +21,7 @@ public class Player
 	private int damageDealt;
 
 	private static final int MAX_HP = 100;
+	public static final int[] XP = {35,80,135,200,265,330,395};
 
 
 	public Player(String name)
@@ -92,12 +93,15 @@ public class Player
 	public int attack(int damage,boolean perforating)
 	{
 		int trueDamage = damage;
-		if(this.armour != null && perforating == false)
+		boolean perforation = false;
+		if(this.armour != null)
 		{
-			trueDamage = this.armour.attackAndCalculateTrueDamage(damage);
+			perforation = !(RandomManager.isInRandomRange(0,100,0,(int)(this.armour.getDamageProtection()*100))) && perforating;
+			trueDamage = this.armour.attackAndCalculateTrueDamage(damage,perforation);
 		}
 		this.HP -= trueDamage;
 		if(this.HP < 0) this.HP = 0;
+
 		return trueDamage;
 	}
 	
@@ -114,26 +118,11 @@ public class Player
 	public void updateHP()
 	{
 		this.HP -= this.poisonAmount;
-		if(this.HP <= 0)
+		if(this.HP <= 1)
 		{
-			this.HP = 0;
+			this.HP = 1;
 			this.poisonAmount = 0;
 		}
-		else
-		{
-			if(this.potion != null)
-			{
-				if(this.HP < 20 || (this.poisonAmount > 0) || this.HP + this.potion.getHealing() - this.potion.getHealthCap() < this.potion.getHealing() / 2)
-				{
-					Potion pot = this.potion;
-					int HPprec = this.HP;
-					this.usePotion();
-					Narrator.narrateHealing(this, pot, HPprec);
-					
-				}
-			}
-		}
-
 	}
 	
 
@@ -175,6 +164,13 @@ public class Player
 		{
 			this.HP = 0;
 		}
+	}
+
+	public int givePotion(Potion cacca)
+	{
+	    int oldHP = this.HP;
+		this.HP = Math.min(this.HP + cacca.getHealing(), cacca.getHealthCap());
+		return this.HP - oldHP;
 	}
 	
 	

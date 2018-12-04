@@ -190,7 +190,7 @@ public class Fight
 				escape = this.tryEscapeFight(this.activePlayer.getDiscipline());
 				if(escape == true)
 				{
-					if(RandomManager.isInRandomRange(0,100,0,Fight.ESCAPE_FAIL_RATE))
+					if(RandomManager.isInRandomRange(0,100,0, Fight.ESCAPE_FAIL_RATE))
 					{
 						this.status = Fight.STATUS_ESCAPE_FAILED;
 						return 0;
@@ -232,13 +232,14 @@ public class Fight
 					//Utilizza con molta probabilita l'arma di livello piu alto
 					Weapon bestWeapon = Weapon.bestWeapon(this.activePlayer.getPrimaryWeapon(), this.activePlayer.getSecondaryWeapon());
 					Weapon worstWeapon = Weapon.worstWeapon(this.activePlayer.getPrimaryWeapon(), this.activePlayer.getSecondaryWeapon());
-					if(RandomManager.isInRandomRange(0, 100, 0, Fight.USE_WEAKEST_WEAPON_CHANCE))
+					if(!(RandomManager.isInRandomRange(0, 100, 0, Fight.USE_WEAKEST_WEAPON_CHANCE)) || worstWeapon.getLevel() > 0)
 					{
-						weaponUsed = worstWeapon;
+						weaponUsed = bestWeapon;
+
 					}
 					else
 					{
-						weaponUsed = bestWeapon;
+						weaponUsed = worstWeapon;
 					}
 				}
 			}

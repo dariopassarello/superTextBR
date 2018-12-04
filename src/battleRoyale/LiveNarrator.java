@@ -3,10 +3,7 @@ package battleRoyale;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.rmi.server.ExportException;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LiveNarrator
@@ -34,7 +31,7 @@ public class LiveNarrator
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
     public static final int STACK_SIZE = 5;
-    public static final String escapeFailCause[] = {"ma scivola su una merda","ma inciampa","ma viene fermato da un Comunista","ma fallisce","ma fallisce miseramente","ma trova l'amore della sua vita","si dimentica di fuggire"};
+    public static final String escapeFailCause[] = {"ma scivola su una merda","ma inciampa","ma viene fermato da un Comunista","ma fallisce","ma fallisce miseramente","ma trova l'amore della sua vita","ma si dimentica di fuggire"};
     public static final String missCause[] = {"ma lo manca perchè ha una mira di merda","ma viene distratto","ma per poco non si colpisce da solo","ma lo manca","ma lo manca di un pelo","ma fallisce ","ma fallisce miseramente"};
 
     public LiveNarrator(GameFlow actualGameFlow,CopyOnWriteArrayList<Player> allPlayers,CopyOnWriteArrayList<Player> playerWatchList,int loggingLevel)
@@ -84,20 +81,28 @@ public class LiveNarrator
             String postText;
             if(previousHealthValue == player.getHP())
             {
-                postText = String.format("]%d HP\n",player.getHP());
+                postText = String.format("]%d HP",player.getHP());
             }
             else
             {
-                postText = String.format("]%d HP (%d HP)\n",player.getHP(),player.getHP() - previousHealthValue);
+                postText = String.format("]%d HP (%d HP)",player.getHP(),player.getHP() - previousHealthValue);
             }
             printAdvancedHealthBar("\nHP [", postText,previousHealthValue,player.getHP(),100,40,'X');
+            if(player.equals(currentFight.getTargetPlayer()))
+            {
+                System.out.printf("  %s<- [%s %s %s]%s\n",ANSI_YELLOW,currentFight.getActivePlayer().getName(),currentFight.getWeaponUsed().getPrefix(),currentFight.getWeaponUsed().getName(),ANSI_RESET);
+            }
+            else
+            {
+                System.out.print("\n");
+            }
         }
         if(printEquipment)
         {
             System.out.printf("ARMI[%s (LIV %d)|%s (LIV %d)]",player.getPrimaryWeapon().getName(),player.getPrimaryWeapon().getLevel(),player.getSecondaryWeapon().getName(),player.getSecondaryWeapon().getLevel());
             if(player.getArmour() != null)
             {
-                printHealthBar("\nARMOUR [",String.format("] %d HP ",player.getArmour().getHP()),player.getArmour().getHP(),player.getArmour().getMaxHealth(),40,'A');
+                printHealthBar("\nARMOUR [",String.format("] %d HP %s",player.getArmour().getHP(),player.getArmour().getName()),player.getArmour().getHP(),player.getArmour().getMaxHealth(),40,'A');
             }
         }
         System.out.printf("%s\n\n",ANSI_RESET);
@@ -171,7 +176,7 @@ public class LiveNarrator
         switch(fight.getStatus())
         {
             case Fight.STATUS_ESCAPE:
-                return String.format("\n[%s] fugge %s %s (HP: %d)\n",playerName,fight.getLocation().getPreposition(),fight.getLocation().getName(),fight.getActivePlayer().getHP());
+                return String.format("\n[%s] fugge (HP: %d)\n",playerName,fight.getActivePlayer().getHP());
             case Fight.STATUS_ESCAPE_FAILED:
                 return String.format("\n[%s] prova a fuggire %s\n",playerName,randomEscape);
             case  Fight.STATUS_STILL_FIGHTING:
@@ -289,6 +294,76 @@ public class LiveNarrator
 
     }
 
+    public void playerHealing(Player p, Potion potion, int heal)
+    {
+        printHeader();
+        String s = String.format("\n[%s] si è curato con [%s] (HEAL: %d HP)\n", p.getName(), potion.getName(), heal);
+        pushInEventStack(s);
+        printStack();
+        hold(1000,2000);
+    }
+
+
+    public void announceWinner(Player p)
+    {
+        clearScreen();
+        System.out.printf("La partita è conclusa. \n\nIl vincitore è \n \n %s \n \n KILLS. %d, DANNO: %d HP",p.getName().toUpperCase(),p.getKills(),p.getDamageDealt());
+    }
+
+    public void printKillStats(int max, boolean onlyAlivePlayers)
+    {
+        clearScreen();
+        printHeader();
+        CopyOnWriteArrayList<Player> cloneList = new CopyOnWriteArrayList<Player>();
+        cloneList.addAll(this.allPlayers);
+        cloneList = LiveNarrator.sortPlayers(cloneList,new Player.KillComparator(),true);
+        if(onlyAlivePlayers == true)
+        {
+            for(Player p : cloneList)
+            {
+                if(!p.isAlive())
+                {
+                    cloneList.remove(p);
+                }
+            }
+        }
+        int maxPlayerLength = 0;
+        int maxPlayers = Math.min(
+                this.allPlayers.size(),max);
+        String printString;
+        for(int i = 0; i < maxPlayers; i++)
+        {
+            if(cloneList.get(i).getName().length() >= maxPlayerLength)
+            {
+                maxPlayerLength = cloneList.get(i).getName().length();
+            }
+        }
+        printString = "\n%-2d. [%-" + String.format("\n%d",maxPlayerLength) + "s] HP: %-3d KILLS: %-2d DANNO: %-4d ARMI [ %s (%d) | %s (%d)]%s %s";
+        for(int i = 0; i < maxPlayers; i++)
+        {
+            String color;
+            String status;
+            Player p = this.allPlayers.get(i);
+            if(p.isAlive())
+            {
+                color = ANSI_RESET;
+                status = "";
+            }
+            else
+            {
+                status = "[DEAD]";
+                color = ANSI_RED;
+            }
+
+            System.out.printf(printString,color, i + 1, p.getName().toUpperCase(), p.getHP(), p.getKills(), p.getDamageDealt()
+                    , p.getPrimaryWeapon().getName(), p.getSecondaryWeapon().getName(),status,ANSI_RESET);
+        }
+        // "1. [NOME PLAYER] HP: %d KILLS:%d  DAMAGE_DEALT:%d [WEAPON 1 | WEAPON 2] Staus..."
+        hold(5000,7000);
+        clearScreen();
+    }
+
+
     public void poisonDeaths(Player p)
     {
         printHeader();
@@ -386,6 +461,24 @@ public class LiveNarrator
     {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    public static CopyOnWriteArrayList<Player> sortPlayers(CopyOnWriteArrayList<Player> players, Comparator<Player> c, boolean reverse)
+    {
+        for(int i = 0; i < players.size() - 1; i++)
+        {
+            for(int j = i + 1; j < players.size(); j++)
+            {
+                int comp = c.compare(players.get(i),players.get(j));
+                if((comp > 0 && reverse == false) || (comp < 0 && reverse == true))
+                {
+                    Player temp = players.get(i);
+                    players.set(i,players.get(j));
+                    players.set(j,temp);
+                }
+            }
+        }
+        return players;
     }
 
 
