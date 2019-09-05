@@ -1,0 +1,35 @@
+al; primo piano di casa pit al lago
+al; secondo piano di casa pit al lago
+al; sesto piano di casa pit al lago
+a; Dario City
+in; via del deib
+a; Milano
+a; Casa Paso
+in; S.0.2
+in una; Simulazione di Kien
+a; Buccinasco
+a; Cesano Boscone
+a; Duomo M2 M3
+in; L26
+in; natta
+a; Bovisa
+su un; Treno Leonardo
+a; Salerno
+in; Lucania
+a; Nocera Superiore
+a; Nocera Inferiore
+a; Nocera Intermedia
+al; cat Cafe
+sul; Terzo Abbiategrasso di fila
+al; Mac donald di Loreto
+a; casa gio
+in una; sPila
+in un; cinema
+al; citylife
+al;  bubbletea
+nella; testa di Dario
+nella; quinta dimensione
+a; Gravina in Sicilia
+a; Gravina in puglia
+nella; ALU
+nella; fanfic

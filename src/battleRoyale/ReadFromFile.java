@@ -34,6 +34,7 @@ public class ReadFromFile
 			String st;
 			while((st = reader.readLine())!= null)
 			{
+				
 				Player p = new Player(st);
 				players.add(p);
 			}

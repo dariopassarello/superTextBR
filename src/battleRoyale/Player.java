@@ -1,7 +1,7 @@
 package battleRoyale;
 
 import java.util.Comparator;
-
+@SuppressWarnings("Access can be package-private")
 public class Player
 {
 	//NAME
@@ -19,9 +19,15 @@ public class Player
 	//STATS
 	private int kills;
 	private int damageDealt;
+	private int totalHeal;
+	private int weaponUpgrades;
 
-	private static final int MAX_HP = 100;
-	public static final int[] XP = {35,80,135,200,265,330,395};
+
+	public static final int MAX_HP = 100;
+	public static final int[] XP = {35,80,135,200,265,330,400};
+	public static final int HEAL_PER_XP = 3;
+	public static final int XP_PER_UPGRADE = 5;
+	public static final int XP_PER_KILL = 20;
 
 
 	public Player(String name)
@@ -36,6 +42,8 @@ public class Player
 		this.disarmed = false;
 		this.discipline = 0;
 		this.potion = null;
+		this.totalHeal = 0;
+		this.weaponUpgrades = 0;
 	}
 
 
@@ -45,24 +53,11 @@ public class Player
 		{
 			if(p1.getKills() == p2.getKills())
 			{
-				if(p1.getDamageDealt() == p2.getDamageDealt())
-				{
-					return 0;
-				}
-				else if(p1.getDamageDealt() > p2.getDamageDealt())
-				{
-					return 1;
-				}
-				else
-				{
-					return -1;
-				}
-
+				if(p1.getDamageDealt() == p2.getDamageDealt()) return 0;
+				else if(p1.getDamageDealt() > p2.getDamageDealt()) return 1;
+				else return -1;
 			}
-			else if(p1.getKills() > p2.getKills())
-			{
-				return 1;
-			}
+			else if(p1.getKills() > p2.getKills()) return 1;
 			else return -1;
 
 		}
@@ -72,7 +67,10 @@ public class Player
 		return this.name;
 	}
 
-
+    public void incrementUpgrade()
+    {
+        this.weaponUpgrades++;
+    }
 
 	public Weapon getPrimaryWeapon() {
 		return primaryWeapon;
@@ -109,10 +107,7 @@ public class Player
 	{
 		this.poisonAmount = 0;
 		this.HP += healAmount;
-		if(this.HP > Player.MAX_HP)
-		{
-			this.HP = Player.MAX_HP;
-		}
+		if(this.HP > Player.MAX_HP) this.HP = Player.MAX_HP;
 	}
 	
 	public void updateHP()
@@ -134,14 +129,8 @@ public class Player
 	
 	public boolean isAlive()
 	{
-		if(HP > 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return HP > 0;
+
 	}
 	
 	public int getMaxWeaponTier()
@@ -156,20 +145,20 @@ public class Player
 	
 	public void setHP(int HP)
 	{
-		if(HP > 0)
-		{
-			this.HP = HP;
-		}
-		else
-		{
-			this.HP = 0;
-		}
+	    this.HP = HP > 0 ? HP : 0;
 	}
 
+    /**
+     * figa che roba
+     *
+     * @param cacca
+     * @return culo
+     */
 	public int givePotion(Potion cacca)
 	{
 	    int oldHP = this.HP;
 		this.HP = Math.min(this.HP + cacca.getHealing(), cacca.getHealthCap());
+		this.totalHeal += this.HP - oldHP;
 		return this.HP - oldHP;
 	}
 	
@@ -227,6 +216,17 @@ public class Player
 	{
 		this.poisonAmount = poisonAmount;
 	}
+
+
+    public int getXP()
+    {
+        return this.damageDealt + this.totalHeal/HEAL_PER_XP + this.kills*XP_PER_KILL + this.weaponUpgrades*XP_PER_UPGRADE;
+    }
+
+    public int getLevel()
+    {
+        return RandomManager.multiRange(getXP(),XP);
+    }
 
 
 	public Potion getPotion() 

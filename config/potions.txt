@@ -1,0 +1,31 @@
+tachipirina 500; 20; 100
+tachipirina 500 (x2); 40; 100
+fuze tea; 30; 75
+gazzosa; 30; 75
+chinotto; 30; 75
+cerotto; 30; 50
+un cuore; 1; 100
+pozione curativa piccola; 10; 100
+pozione curativa media; 30; 100
+pozione curativa forte; 50; 100
+pozione curativa leggendaria; 100; 100
+colpo di culo; 50; 100
+panino; 20; 75
+panino buono; 25; 75
+acqua panna; 10; 75
+gocciole; 20; 75
+gocciole con panna; 30; 75
+panna acida; 10; 75
+bottiglietta con liquido verde strano; 30; 75
+pozione curativa di default; 10; 50
+sciroppo di granatina; 60; 100
+sciroppo di cocco; 50; 100
+sciroppo di mandorla; 40; 75
+sciroppo di anice; 30; 75
+sciroppo di menta; 20; 75
+bubble tea; 40; 75
+osso; 10; 75
+frutto del drago; 40; 100
+insulto liberatorio; 40; 100
+la torta della forgia; 30; 100
+il lattosio; 10; 100

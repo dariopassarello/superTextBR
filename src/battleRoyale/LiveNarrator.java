@@ -58,7 +58,7 @@ public class LiveNarrator
 
         if(player.isAlive())
         {
-            System.out.printf("\n%s (KILLS: %d) ",player.getName().toUpperCase(),player.getKills());
+            System.out.printf("\n%s  (LEVEL: %d) ",player.getName().toUpperCase(),player.getLevel());
             if(player.getPoisonAmount() > 0)
             {
                 System.out.printf("%s[AVVELENATO]%s  ",ANSI_PURPLE,ANSI_RESET);
@@ -239,22 +239,30 @@ public class LiveNarrator
         String s;
         String k = "";
         s = String.format("\n[%s] ha equipaggiato \"%s\" ",p.getName(),l.getName());
-        if(l instanceof Weapon)
-        {
-            k = String.format("(LIVELLO %d)\n",((Weapon) l).getLevel());
-        }
-        if(l instanceof Armour)
-        {
-            k = String.format("(PROTEZIONE: %d %%)\n",(int)(((Armour) l).getDamageProtection()*100));
-        }
-        if(l instanceof Potion)
-        {
-            k = String.format("(CURA: %d/MAX: %d)\n",((Potion) l).getHealing(),((Potion) l).getHealthCap());
-        }
+        if(l instanceof Weapon) k = String.format("(LIVELLO %d)\n",((Weapon) l).getLevel());
+        if(l instanceof Armour) k = String.format("(PROTEZIONE: %d %%)\n",(int)(((Armour) l).getDamageProtection()*100));
+        if(l instanceof Potion) k = String.format("(CURA: %d/MAX: %d)\n",((Potion) l).getHealing(),((Potion) l).getHealthCap());
         pushInEventStack(s.concat(k));
         printStack();
         hold(2000,2500);
     }
+
+
+    public void playerLevelUp(Player p)
+    {
+        playerLevelUp(p, false);
+    }
+
+    public void playerLevelUp(Player p,boolean inFight)
+    {
+        printHeader();
+        if(inFight) printFightHeader();
+        pushInEventStack(String.format("\n%s^^^[%s] sale al livello %d ^^^%s\n",ANSI_CYAN,p.getName().toUpperCase(),p.getLevel(),ANSI_RESET));
+        printStack();
+        hold(2000,2500);
+    }
+
+
     public void upgradeWeapon(Player p,Weapon w)
     {
         printHeader();
@@ -276,7 +284,7 @@ public class LiveNarrator
                 pois = true;
             }
         }
-        if(pois == true)
+        if(pois)
         {
             String s = "\nDANNI DA VELENO: \n";
             for(Player p : this.allPlayers)
@@ -317,7 +325,7 @@ public class LiveNarrator
         CopyOnWriteArrayList<Player> cloneList = new CopyOnWriteArrayList<Player>();
         cloneList.addAll(this.allPlayers);
         cloneList = LiveNarrator.sortPlayers(cloneList,new Player.KillComparator(),true);
-        if(onlyAlivePlayers == true)
+        if(onlyAlivePlayers)
         {
             for(Player p : cloneList)
             {
@@ -328,8 +336,7 @@ public class LiveNarrator
             }
         }
         int maxPlayerLength = 0;
-        int maxPlayers = Math.min(
-                this.allPlayers.size(),max);
+        int maxPlayers = Math.min(this.allPlayers.size(),max);
         String printString;
         for(int i = 0; i < maxPlayers; i++)
         {

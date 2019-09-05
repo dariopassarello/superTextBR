@@ -1,0 +1,22 @@
+giacchetta di pelle; 0.1; 10
+vestito da sposa; 0.1; 10
+armatura di legno; 0.4; 30
+corazza resistiva-capacitiva; 0.8; 40
+corazza resistiva-induttiva; 0.3; 70
+corazza puramente resistiva; 0.5; 55
+antivirus; 0.2; 30
+corazza da gaming; 0.6; 70
+congelamento del voto; 0.2; 50
+pettorina; 0.1; 5
+abbigliamento balenciaga; 0.5; 50
+acciaio inox; 0.4; 50
+armatura d'oro; 0.7; 15
+santino protettore; 0.9; 10
+giacchetta di norton; 0.2; 20
+maglietta di iridio-platino; 0.6; 60
+sacchetto gelo; 0.05; 5
+gremiule da cucina munuto di KAZZO; 0.4; 50
+canotta della salute; 0.4; 45
+la maglietta con i porno a cartone animato giapponese; 0.6; 20
+fazzolettino; 0.3; 30
+zainetto di hulk superdotato; 0.4; 25
