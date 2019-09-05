@@ -9,103 +9,66 @@ import me.dariopassarello.battleroyale.lootables.Weapon;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ReadFromFile
 {
-
-    public static CopyOnWriteArrayList<Player> readPlayers(File file)
+    private static List<String> getLines(File file)
     {
-        if(!file.exists()) return null;
+        if (!file.exists()) return null;
+
+        List<String> list = new ArrayList<>();
 
         BufferedReader reader;
-        CopyOnWriteArrayList<Player> players = new CopyOnWriteArrayList<>();
         try
         {
             reader = new BufferedReader(new FileReader(file));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
 
-            return null;
-        }
-        try
-        {
             String st;
             while ((st = reader.readLine()) != null)
             {
-                Player p = new Player(st);
-                players.add(p);
+                list.add(st);
             }
+
+            reader.close();
         } catch (Exception e)
         {
             e.printStackTrace();
-            try
-            {
-                reader.close();
-            } catch (IOException e1)
-            {
-                e1.printStackTrace();
-            }
             return null;
         }
-        try
-        {
-            reader.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+
+        return list;
+    }
+
+    public static CopyOnWriteArrayList<Player> readPlayers(File file)
+    {
+        CopyOnWriteArrayList<Player> players = new CopyOnWriteArrayList<>();
+        List<String> lines = getLines(file);
+
+        if (lines == null) return null;
+
+        lines.forEach(st -> players.add(new Player(st)));
+
         return players;
     }
 
     public static CopyOnWriteArrayList<Location> readLocations(File file)
     {
-        BufferedReader reader;
-        CopyOnWriteArrayList<Location> locations = new CopyOnWriteArrayList<Location>();
-        try
-        {
-            reader = new BufferedReader(new FileReader(file));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+        CopyOnWriteArrayList<Location> locations = new CopyOnWriteArrayList<>();
+        List<String> lines = getLines(file);
 
-            return null;
-        }
-        try
-        {
-            String st;
-            String split[];
-            while ((st = reader.readLine()) != null)
-            {
-                split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
-                locations.add(new Location(split[0], split[1]));
+        if (lines == null) return null;
 
-            }
-        } catch (Exception e)
+        lines.forEach(st ->
         {
-            e.printStackTrace();
-            try
-            {
-                reader.close();
-            } catch (IOException e1)
-            {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-            return null;
-        }
-        try
-        {
-            reader.close();
-        } catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            String[] split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
+
+            locations.add(new Location(split[0], split[1]));
+        });
+
         return locations;
     }
 
@@ -125,149 +88,62 @@ public class ReadFromFile
 
     public static CopyOnWriteArrayList<Weapon> readWeapons(File file)
     {
+        CopyOnWriteArrayList<Weapon> lootables = new CopyOnWriteArrayList<>();
+        List<String> lines = getLines(file);
 
-        BufferedReader reader;
-        CopyOnWriteArrayList<Weapon> lootable = new CopyOnWriteArrayList<Weapon>();
-        try
-        {
-            reader = new BufferedReader(new FileReader(file));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+        if (lines == null) return null;
 
-            return null;
-        }
-        try
+        lines.forEach(st ->
         {
-            String st;
-            String split[];
-            while ((st = reader.readLine()) != null)
+            String[] split = st.split(";[ \\t\\n\\x0b\\r\\f]*");
+
+            String[] propertiesStr = split[3].split(",");
+            ArrayList<Integer> properties = new ArrayList<>();
+
+            for (String prop : propertiesStr)
             {
-                if (st.charAt(0) != '#')
-                {
-                    //Regex: [ \\t\\n\\x0b\\r\\f]*;[ \\t\\n\\x0b\\r\\f]*
-                    split = st.split(";[ \\t\\n\\x0b\\r\\f]*");
-
-                    String[] propertiesStr = split[3].split(",");
-                    ArrayList<Integer> properties = new ArrayList<Integer>();
-                    for (int i = 0; i < propertiesStr.length; i++)
-                    {
-                        properties.add(Integer.parseInt(propertiesStr[i]));
-                    }
-                    lootable.add(new Weapon(split[0], split[1]
-                            , Arrays.stream(properties.toArray(new Integer[properties.size()])).mapToInt(Integer::intValue).toArray()
-                            , Integer.parseInt(split[2]), findFather(lootable, split[4], st)));
-                }
+                properties.add(Integer.parseInt(prop));
             }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            try
-            {
-                reader.close();
-            } catch (IOException e1)
-            {
-                e1.printStackTrace();
-            }
-            return null;
-        }
-        try
-        {
-            reader.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return lootable;
+
+            lootables.add(new Weapon(split[0], split[1]
+                    , Arrays.stream(properties.toArray(new Integer[properties.size()])).mapToInt(Integer::intValue).toArray()
+                    , Integer.parseInt(split[2]), findFather(lootables, split[4], st)));
+        });
+
+        return lootables;
     }
 
     public static CopyOnWriteArrayList<Armour> readArmours(File file)
     {
-        BufferedReader reader;
-        CopyOnWriteArrayList<Armour> armours = new CopyOnWriteArrayList<Armour>();
-        try
-        {
-            reader = new BufferedReader(new FileReader(file));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+        CopyOnWriteArrayList<Armour> armours = new CopyOnWriteArrayList<>();
+        List<String> lines = getLines(file);
 
-            return null;
-        }
-        try
+        if (lines == null) return null;
+
+        lines.forEach(st ->
         {
-            String st;
-            String split[];
-            while ((st = reader.readLine()) != null)
-            {
-                split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
-                armours.add(new Armour(split[0], Float.parseFloat(split[1]), Integer.parseInt(split[2])));
-            }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            try
-            {
-                reader.close();
-            } catch (IOException e1)
-            {
-                e1.printStackTrace();
-            }
-            return null;
-        }
-        try
-        {
-            reader.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+            String[] split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
+
+            armours.add(new Armour(split[0], Float.parseFloat(split[1]), Integer.parseInt(split[2])));
+        });
+
         return armours;
     }
 
     public static CopyOnWriteArrayList<Potion> readPotions(File file)
     {
-        BufferedReader reader;
         CopyOnWriteArrayList<Potion> potions = new CopyOnWriteArrayList<Potion>();
-        try
-        {
-            reader = new BufferedReader(new FileReader(file));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+        List<String> lines = getLines(file);
 
-            return null;
-        }
-        try
+        if (lines == null) return null;
+
+        lines.forEach(st ->
         {
-            String st;
-            String split[];
-            while ((st = reader.readLine()) != null)
-            {
-                split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
-                potions.add(new Potion(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2])));
-            }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            try
-            {
-                reader.close();
-            } catch (IOException e1)
-            {
-                e1.printStackTrace();
-            }
-            return null;
-        }
-        try
-        {
-            reader.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+            String[] split = st.split(";[ \\\\t\\\\n\\\\x0b\\\\r\\\\f]*");
+
+            potions.add(new Potion(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2])));
+        });
+
         return potions;
     }
-
-
 }

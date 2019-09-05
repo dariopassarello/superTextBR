@@ -83,8 +83,7 @@ public class Main
     {
         Scanner reader = new Scanner(System.in);
         System.out.println(text);
-        int n = reader.nextInt();
-        return n;
+        return reader.nextInt();
     }
 
 }

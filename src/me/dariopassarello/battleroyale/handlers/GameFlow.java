@@ -1,7 +1,7 @@
 package me.dariopassarello.battleroyale.handlers;
 
-import me.dariopassarello.battleroyale.components.Player;
 import me.dariopassarello.battleroyale.components.Location;
+import me.dariopassarello.battleroyale.components.Player;
 import me.dariopassarello.battleroyale.lootables.Armour;
 import me.dariopassarello.battleroyale.lootables.Lootable;
 import me.dariopassarello.battleroyale.lootables.Potion;
@@ -36,10 +36,8 @@ public class GameFlow
     private static final int[] TYPE_OF_LOOT_ODDS = {50, 80};
     public static final int MODE_BATTLE_ROYALE = 0;
 
-
     public GameFlow(int gameMode, CopyOnWriteArrayList<Player> players, CopyOnWriteArrayList<Location> locations, CopyOnWriteArrayList<Lootable> lootables)
     {
-
         this.players = players;
         this.allPlayers.addAll(players);
         this.locations = locations;
@@ -54,7 +52,6 @@ public class GameFlow
         this.liveNarrator = new LiveNarrator(this, this.players, null, 0);
         LiveNarrator.clearScreen();
     }
-
 
     public void startGame()
     {
@@ -244,7 +241,6 @@ public class GameFlow
         return hour(this.tick);
     }
 
-
     private void killPlayer(Player player)
     {
         this.players.remove(player);
@@ -262,6 +258,4 @@ public class GameFlow
         float k = (float) this.getAlivePlayers() / this.allPlayers.size();
         return (int) ((1 - k) * GameFlow.FIND_OBJECT_RATE_MAX + k * GameFlow.FIND_OBJECT_RATE_MIN);
     }
-
-
 }

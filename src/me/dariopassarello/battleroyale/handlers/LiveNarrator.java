@@ -374,7 +374,6 @@ public class LiveNarrator
         clearScreen();
     }
 
-
     public void poisonDeaths(Player p)
     {
         printHeader();
@@ -382,7 +381,6 @@ public class LiveNarrator
         pushInEventStack(s);
         printStack();
         LiveNarrator.randomSleep(2000,3000);
-
     }
 
     //Utility methods
@@ -400,12 +398,8 @@ public class LiveNarrator
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
-
     }
-
 
     private static void printHealthBar(String preText, String postText, int value, int maxValue, int lenght, char barSymbol)
     {
@@ -423,6 +417,7 @@ public class LiveNarrator
         }
         System.out.printf("%s",postText);
     }
+
     private static void printAdvancedHealthBar(String preText, String postText, int previousValue, int value, int maxValue, int lenght, char barSymbol)
     {
         System.out.printf("%s" ,preText);
@@ -446,7 +441,6 @@ public class LiveNarrator
         System.out.printf("%s",postText);
     }
 
-
     private static void randomSleep(int minSleep,int maxSleep)
     {
         Random rand = new Random();
@@ -468,6 +462,7 @@ public class LiveNarrator
             e.printStackTrace();
         }
     }
+
     public static void clearScreen()
     {
         System.out.print("\033[H\033[2J");
@@ -491,8 +486,6 @@ public class LiveNarrator
         }
         return players;
     }
-
-
     // do your thing.
 }
 

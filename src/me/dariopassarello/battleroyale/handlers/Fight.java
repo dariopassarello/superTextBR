@@ -1,8 +1,8 @@
 package me.dariopassarello.battleroyale.handlers;
 
-import me.dariopassarello.battleroyale.components.Player;
 import me.dariopassarello.battleroyale.components.HitStats;
 import me.dariopassarello.battleroyale.components.Location;
+import me.dariopassarello.battleroyale.components.Player;
 import me.dariopassarello.battleroyale.lootables.Weapon;
 
 import java.util.ArrayList;
@@ -45,7 +45,6 @@ public class Fight
         this.turn = 0;
         this.updateDiscipline(0);
     }
-
 
     public Player getPlayer1()
     {

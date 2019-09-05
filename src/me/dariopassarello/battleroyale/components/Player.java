@@ -34,7 +34,6 @@ public class Player
     public static final int XP_PER_UPGRADE = 5;
     public static final int XP_PER_KILL = 20;
 
-
     public Player(String name)
     {
         this.name = name;
