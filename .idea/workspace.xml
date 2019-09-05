@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0d1b0258-b230-4f2a-8c09-efa2cf5e59b8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SuperTextBR.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/HitStats.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/ReadFromFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Lootable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/bin/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Armour.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Fight.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/FightResult.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/GameFlow.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/GrrrrException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/HitStats.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/LiveNarrator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Location.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Lootable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Narrator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Player$KillComparator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Player.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Potion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/RandomManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/ReadFromFile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/battleRoyale/Weapon.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Armour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Armour.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Fight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/Fight.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/FightResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/FightResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/GameFlow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/GameFlow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/GrrrrException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/exceptions/GrrrrException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/HitStats.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/LiveNarrator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/LiveNarrator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/Location.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Lootable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Narrator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/Narrator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Player.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Potion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Potion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/RandomManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/RandomManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/ReadFromFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/battleRoyale/Weapon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Weapon.java" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/classes/" />
+    <ignored path="$PROJECT_DIR$/bin/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="testRunner" value="GRADLE" />
+    <option name="delegatedBuild" value="true" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>sortPlayers</find>
+      <find>comparator</find>
+      <find>vincitore</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/battleRoyale/Main.java" />
+        <option value="$PROJECT_DIR$/src/battleRoyale/ReadFromFile.java" />
+        <option value="$PROJECT_DIR$/src/battleRoyale/Fight.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/Main.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/Lootable.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Lootable.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/HitStats.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/Location.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/fight/Location.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/Fight.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/fight/Fight.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/fight/FightResult.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/fight/HitStats.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/GameFlow.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/LiveNarrator.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/FightResult.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/FightResult.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/Fight.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/Player.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/GameFlow.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/Narrator.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/Player.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/ReadFromFile.java" />
+        <option value="$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/LiveNarrator.java" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="32" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="SuperTextBR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="superTextBR" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SuperTextBR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="superTextBR" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SuperTextBR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="superTextBR" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="battleroyale" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SuperTextBR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="superTextBR" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="battleroyale" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SuperTextBR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="superTextBR" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="battleroyale" type="462c0819:PsiDirectoryNode" />
+              <item name="exceptions" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SuperTextBR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="superTextBR" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="battleroyale" type="462c0819:PsiDirectoryNode" />
+              <item name="handlers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SuperTextBR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="superTextBR" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="battleroyale" type="462c0819:PsiDirectoryNode" />
+              <item name="lootables" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Facets" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.18666667" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Java" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.dariopassarello.battleroyale.Main" />
+      <module name="SuperTextBR" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0d1b0258-b230-4f2a-8c09-efa2cf5e59b8" name="Default Changelist" comment="" />
+      <created>1567712539507</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1567712539507</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="32" width="1936" height="1056" extended-state="6" />
+    <layout>
+      <window_info id="Image Layers" />
+      <window_info id="Designer" />
+      <window_info id="UI Designer" />
+      <window_info id="Capture Tool" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" weight="0.32936078" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32936078" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.35969663" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Palette" />
+      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Maven" />
+      <window_info anchor="right" id="Capture Analysis" />
+      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Lootable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Armour.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Potion.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="13" column="44" lean-forward="true" selection-start-line="13" selection-start-column="44" selection-end-line="13" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/lootables/Weapon.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="568">
+          <caret line="68" column="11" selection-start-line="68" selection-start-column="11" selection-end-line="68" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_152/src.zip!/java/lang/Integer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="1226" column="21" selection-start-line="1226" selection-start-column="21" selection-end-line="1226" selection-end-column="21" />
+          <folding>
+            <element signature="e#47036#47037#0" expanded="true" />
+            <element signature="e#47092#47093#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/FightResult.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding>
+            <element signature="e#3462#3463#0" expanded="true" />
+            <element signature="e#3491#3492#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/RandomManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/ReadFromFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/exceptions/GrrrrException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/HitStats.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/components/Location.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/Fight.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="26" column="35" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/LiveNarrator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="376">
+          <caret line="333" column="37" lean-forward="true" selection-start-line="333" selection-start-column="37" selection-end-line="333" selection-end-column="37" />
+          <folding>
+            <element signature="e#13256#13264#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/GameFlow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/dariopassarello/battleroyale/handlers/Narrator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="32" column="48" lean-forward="true" selection-start-line="32" selection-start-column="48" selection-end-line="32" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.18666667" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>SuperTextBR</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.18666667" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.18666667" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.18666667" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

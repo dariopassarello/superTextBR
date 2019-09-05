@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: battleRoyale.Main
-Main-Class: battleRoyale.Main
+Class-Path: Main
+Main-Class: me.dariopassarello.battleroyale.Main
 
